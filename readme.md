@@ -7,7 +7,23 @@ If you are puzzled as to why so many of your users have a time on site of 0 to 1
 * You have redesigned your website hoping to improve user engagement (e.g. increase time on site and lower bounce rate). Because you used the default implementation of the Google Analytics code, your bounce rate is over stated and your time on site is under stated. After the redesign, you see positive numbers on both these fronts. Bounce rate is down and time on site is up. Both these data points are not only incorrect, but the opposite could be true. Your time on site could, in actuality, be lower than before. Your bounce rate could, in actuality, be higher than before.
 * More information on this subject, [straight from Google](http://analytics.blogspot.com/2012/07/tracking-adjusted-bounce-rate-in-google.html).
 
-The Google Analytics Poller provides a simple solution to remedy these issues. It thinly wraps the Google Analytics ```_gaq``` API and adds reoccurring event polling. These "read" events are captured every n seconds, where n is the number of seconds you specify.
+The Google Analytics Poller provides a simple solution to remedy these issues. It thinly wraps the Google Analytics ```_gaq``` API and adds reoccurring event polling.
+
+## Trackers
+
+###_gapTrackReads
+The core tracker. Logs ```gapRead``` events every n seconds. Each new event label is updated as time progresses. For instance, with a 10 second cadence the first event label would be 10, the second would be 20, and so on.
+
+```javascript
+_gap.push(["_gapTrackReads", 10]); // Polling cadence can be changed.
+```
+
+###_gapTrackClicks
+Tracker which logs ```a``` and ```button``` mousedown events (i.e. user clicks) via event delegation. Event action logged is ```gapClick```. Event label logged is ```#{linkName} (#{linkURL})```.
+
+```javascript
+_gap.push(["_gapTrackClicks"]);
+```
 
 ## Usage
 There is no need to include any of the default Google Analytics tracking code, as GAP takes care of all this for you. Simply [download the gap.js](https://raw.github.com/rockymadden/gap/master/gap.js) file, place on your server, and update the noted fields below. That's it!
@@ -16,7 +32,8 @@ There is no need to include any of the default Google Analytics tracking code, a
 var _gap = _gap || [];
 _gap.push(["_setAccount", "UA-XXXXXX-X"]); // CHANGE.
 _gap.push(["_trackPageview"]);
-_gap.push(["_gapTrackRead", 10]); // POLLING CADIENCE, CHANGE IF DESIRED.
+_gap.push(["_gapTrackReads", 10]);
+_gap.push(["_gapTrackClicks"]);
 
 (function() {
 	var gap = document.createElement("script");
