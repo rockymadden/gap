@@ -1,5 +1,5 @@
 #Google Analytics Poller (GAP)
-If you are puzzled as to why you have so many of your users have a time on site of 0 to 10 seconds, GAP can help you. If you are puzzled as to why your bounce rate is so high, GAP can help you. If you want to accurately test changes to your website and how they truly affect user engagement, GAP can help you. The default implementation of the Google Analytics tracking code has these undesirable traits. The following scenarios help illustrate: 
+If you are puzzled as to why so many of your users have a time on site of 0 to 10 seconds, GAP can help you. If you are puzzled as to why your bounce rate is so high, GAP can help you. If you want to accurately test changes to your website and how they truly affect user engagement, GAP can help you. The default implementation of the Google Analytics tracking code has these undesirable traits. The following scenarios help illustrate: 
 
 * User A arrives on your website. She finds a wealth of information she is looking for on the first landing page. She spends 15 minutes reading and then departs. By default, this is considered a bounce.
 * User B arrives on your website. He finds a wealth of information he is looking for on the first landing page. He spends two hours reading and then departs. By default, the time on site for this user is 0 seconds.
@@ -20,9 +20,9 @@ _gap.push(["_gapTrackRead", "10"]); // POLLING CADIENCE, CHANGE IF DESIRED.
 
 (function() {
 	var gap = document.createElement("script");
-	gap.type = "text/javascript";
 	gap.async = true;
-	gap.src = "//yourdomain.com/js/gap.js"; // CHANGE.
+	gap.type = "text/javascript";
+	gap.src = "/js/gap.js"; // CHANGE.
 
 	var s = document.getElementsByTagName("script")[0];
 	s.parentNode.insertBefore(gap, s);
