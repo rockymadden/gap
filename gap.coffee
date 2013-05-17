@@ -1,7 +1,6 @@
 root = exports ? this
 
-unless root._gap?
-	root._gap = []
+unless root._gap? then root._gap = []
 
 class Gap
 	subscribers: []
@@ -18,9 +17,7 @@ class Gap
 		if @isArray(args[0]) then @push(i) for i in args
 		else
 			if args[0].indexOf("_gap") is 0 then @publish(args)
-			else
-				root._gaq.push(args)
-				root.console && console.log("Pushed: " + args.toString())
+			else root._gaq.push(args)
 
 	subscribe: (subscriber) -> @subscribers.push(subscriber)
 
