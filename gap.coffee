@@ -13,11 +13,11 @@ class Gap
 
 	publish: (commandArray) -> subscriber.listen(commandArray) for subscriber in @subscribers
 
-	push: (args) -> if @isArray(args)
-		if @isArray(args[0]) then @push(i) for i in args
+	push: (commandArray) -> if @isArray(commandArray)
+		if @isArray(commandArray[0]) then @push(i) for i in commandArray
 		else
-			if args[0].indexOf("_gap") is 0 then @publish(args)
-			else oot._gaq.push(args)
+			if commandArray[0].indexOf("_gap") is 0 then @publish(commandArray)
+			else oot._gaq.push(commandArray)
 
 	subscribe: (subscriber) -> @subscribers.push(subscriber)
 

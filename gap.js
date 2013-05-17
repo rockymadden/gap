@@ -41,23 +41,22 @@
       return _results;
     };
 
-    Gap.prototype.push = function(args) {
+    Gap.prototype.push = function(commandArray) {
       var i, _i, _len, _results;
 
-      if (this.isArray(args)) {
-        if (this.isArray(args[0])) {
+      if (this.isArray(commandArray)) {
+        if (this.isArray(commandArray[0])) {
           _results = [];
-          for (_i = 0, _len = args.length; _i < _len; _i++) {
-            i = args[_i];
+          for (_i = 0, _len = commandArray.length; _i < _len; _i++) {
+            i = commandArray[_i];
             _results.push(this.push(i));
           }
           return _results;
         } else {
-          if (args[0].indexOf("_gap") === 0) {
-            return this.publish(args);
+          if (commandArray[0].indexOf("_gap") === 0) {
+            return this.publish(commandArray);
           } else {
-            root._gaq.push(args);
-            return root.console && console.log("Pushed: " + args.toString());
+            return oot._gaq.push(commandArray);
           }
         }
       }
@@ -75,18 +74,17 @@
     function GapReadTracker() {}
 
     GapReadTracker.prototype.listen = function(commandArray) {
-      var duration, fn;
+      var fn;
 
-      if (commandArray[0] === "_gapTrackRead" && commandArray.length === 2) {
+      if (commandArray.length === 2 && commandArray[0] === "_gapTrackRead" && typeof commandArray[1] === "number") {
         if (root._gapReadTrackerInterval != null) {
           root.clearInterval(root._gapReadTrackerInterval);
         }
-        duration = parseInt(commandArray[1], 10);
         root._seconds = 0;
         return root._gapReadTrackerInterval = root.setInterval(fn = function() {
-          root._gap.push(["_trackEvent", "read", (root._seconds += duration).toString()]);
+          root._gap.push(["_trackEvent", "read", (root._seconds += commandArray[1]).toString()]);
           return fn;
-        }, duration * 1000);
+        }, commandArray[1] * 1000);
       }
     };
 
