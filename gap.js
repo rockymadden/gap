@@ -56,7 +56,7 @@
           if (commandArray[0].indexOf("_gap") === 0) {
             return this.publish(commandArray);
           } else {
-            return oot._gaq.push(commandArray);
+            return root._gaq.push(commandArray);
           }
         }
       }

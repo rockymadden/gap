@@ -17,7 +17,7 @@ class Gap
 		if @isArray(commandArray[0]) then @push(i) for i in commandArray
 		else
 			if commandArray[0].indexOf("_gap") is 0 then @publish(commandArray)
-			else oot._gaq.push(commandArray)
+			else root._gaq.push(commandArray)
 
 	subscribe: (subscriber) -> @subscribers.push(subscriber)
 
