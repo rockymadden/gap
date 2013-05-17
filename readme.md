@@ -10,7 +10,7 @@ If you are puzzled as to why you have so many of your users have a time on site 
 The Google Analytics Poller provides a simple solution to remedy these issues. It thinly wraps the Google Analytics ```_gaq``` API and adds reoccurring event polling. These "read" events are captured every n seconds, where n is the number of seconds you specify.
 
 ## Usage
-There is no need to include any of the default Google Analytics tracking code. GAP takes care of all this for you.
+There is no need to include any of the default Google Analytics tracking code. GAP takes care of all this for you. Simply [download the gap.js](https://raw.github.com/rockymadden/gap/master/gap.js) file and place on your server (CDN coming) and update the noted fields below. That's it!
 
 ```javascript
 var _gap = _gap || [];
@@ -22,7 +22,7 @@ _gap.push(["_gapTrackRead", "10"]); // POLLING CADIENCE, CHANGE IF DESIRED.
 	var gap = document.createElement("script");
 	gap.type = "text/javascript";
 	gap.async = true;
-	gap.src = "http://example.com/js/gap.js"; // CHANGE.
+	gap.src = "//yourdomain.com/js/gap.js"; // CHANGE.
 
 	var s = document.getElementsByTagName("script")[0];
 	s.parentNode.insertBefore(gap, s);
