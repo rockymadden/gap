@@ -8,6 +8,10 @@
     root._gap = [];
   }
 
+  if (root._gaq == null) {
+    root._gaq = [];
+  }
+
   Gap = (function() {
     Gap.prototype.subscribers = [];
 

@@ -1,6 +1,7 @@
 root = exports ? this
 
 unless root._gap? then root._gap = []
+unless root._gaq? then root._gaq = []
 
 class Gap
 	subscribers: []
