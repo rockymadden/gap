@@ -16,7 +16,7 @@ There is no need to include any of the default Google Analytics tracking code, a
 var _gap = _gap || [];
 _gap.push(["_setAccount", "UA-XXXXXX-X"]); // CHANGE.
 _gap.push(["_trackPageview"]);
-_gap.push(["_gapTrackRead", "10"]); // POLLING CADIENCE, CHANGE IF DESIRED.
+_gap.push(["_gapTrackRead", 10]); // POLLING CADIENCE, CHANGE IF DESIRED.
 
 (function() {
 	var gap = document.createElement("script");

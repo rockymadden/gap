@@ -17,22 +17,21 @@ class Gap
 		if @isArray(args[0]) then @push(i) for i in args
 		else
 			if args[0].indexOf("_gap") is 0 then @publish(args)
-			else root._gaq.push(args)
+			else oot._gaq.push(args)
 
 	subscribe: (subscriber) -> @subscribers.push(subscriber)
 
 class GapReadTracker
 	listen: (commandArray) ->
-		if commandArray[0] is "_gapTrackRead" && commandArray.length is 2
+		if commandArray.length is 2 && commandArray[0] is "_gapTrackRead" && typeof commandArray[1] is "number"
 			if root._gapReadTrackerInterval? then root.clearInterval(root._gapReadTrackerInterval)
 
-			duration = parseInt(commandArray[1], 10)
 			root._seconds = 0
 			root._gapReadTrackerInterval = root.setInterval(
 				fn = () -> 
-					root._gap.push(["_trackEvent", "read", (root._seconds += duration).toString()])
+					root._gap.push(["_trackEvent", "read", (root._seconds += commandArray[1]).toString()])
 					fn
-				, duration * 1000
+				, commandArray[1] * 1000
 			)
 
 (() ->
