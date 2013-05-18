@@ -1,0 +1,26 @@
+# Core ignores.
+*.diff
+*.err
+*.orig
+*.log
+*.rej
+*.swo
+*.swp
+*.vi
+*~
+*#
+.git/
+
+# OS ignores.
+.DS_Store
+
+# Editor ignores.
+*.ids
+*.iml
+*.ipr
+*.iws
+.idea/
+out/
+
+# Build ignores.
+build/
