@@ -1,5 +1,5 @@
 #Google Analytics automatic Push (GAP)
-A thin wrapper around the Google Analytics ```_gaq``` API which provides automatic tracking useful user events. 
+A thin wrapper around the Google Analytics ```_gaq``` API which provides automatic tracking of useful user events. 
 
 ## Trackers
 
