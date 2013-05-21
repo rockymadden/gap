@@ -5,7 +5,7 @@ module.exports = (grunt) ->
 			release: 
 				files: 'gap.js': 'src/gap.coffee'
 			tests: 
-				files: 'test/test_gap.js': 'test/test_gap.coffee'
+				files: 'test/gap.test.js': 'test/gap.test.coffee'
 		qunit: 
 			all: ['test/*.html']
 
