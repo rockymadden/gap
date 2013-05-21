@@ -4,6 +4,8 @@
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
 
   Gap = (function() {
+    Gap.prototype.history = [];
+
     Gap.prototype.subscribers = [];
 
     function Gap(previous, subscribers) {
@@ -47,7 +49,10 @@
           return this.publish(commandArray);
         } else {
           root._gaq.push(commandArray);
-          return (typeof _gapDebug !== "undefined" && _gapDebug !== null) && _gapDebug && (root.console != null) && root.console.log('Pushed: ' + commandArray);
+          if ((root._gapDebug != null) && root._gapDebug && (root.console != null)) {
+            this.history.push(commandArray);
+            return root.console.log('Pushed: ' + commandArray);
+          }
         }
       }
     };

@@ -1,6 +1,7 @@
 root = exports ? this
 
 class Gap
+	history: []
 	subscribers: []
 
 	constructor: (previous, subscribers) ->
@@ -17,7 +18,10 @@ class Gap
 			if commandArray[0].indexOf('_gap') is 0 then @publish(commandArray)
 			else
 				root._gaq.push(commandArray)
-				_gapDebug? && _gapDebug && root.console? && root.console.log('Pushed: ' + commandArray)
+
+				if root._gapDebug? && root._gapDebug && root.console?
+					@history.push(commandArray)
+					root.console.log('Pushed: ' + commandArray)
 
 	subscribe: (subscriber) -> @subscribers.push(subscriber)
 
