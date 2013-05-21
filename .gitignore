@@ -22,3 +22,5 @@
 .idea/
 out/
 
+# Project ignores.
+node_modules/
