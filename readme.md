@@ -1,4 +1,4 @@
-#GAP - Google Analytics automatic Push
+#GAP - Google Analytics automatic Push [![Build Status](https://travis-ci.org/rockymadden/gap.png?branch=master)](https://travis-ci.org/rockymadden/gap)
 Dead simple wrapper around the Google Analytics ```_gaq``` API which provides automatic tracking of user behaviors via events.
 
 ##Installation
