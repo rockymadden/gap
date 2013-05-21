@@ -43,12 +43,12 @@ _gap.push(["_gapTrackReads", 10]); // Polling cadence can be changed.
 
 -----
 
-__gapTrackClicks__
+__gapTrackLinkClicks__
 
-Tracker which logs ```a``` and ```button``` mousedown events (i.e. user clicks) via event delegation. Event action logged is ```gapClick```. Event label logged is ```#{linkName} (#{linkURL})```.
+Tracker which logs ```a``` and ```button``` mousedown events (i.e. user clicks) via event delegation. Event action logged is ```gapLinkClick```. Event label logged is ```#{linkName} (#{linkURL})```.
 
 ```javascript
-_gap.push(["_gapTrackClicks"]);
+_gap.push(["_gapTrackLinkClicks"]);
 ```
 
 ## Versioning

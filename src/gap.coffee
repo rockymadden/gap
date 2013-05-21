@@ -32,9 +32,9 @@ class GapReadTracker
 				, commandArray[1] * 1000
 			)
 
-class GapClickTracker
+class GapLinkClickTracker
 	listen: (commandArray) ->
-		if commandArray.length is 1 && commandArray[0] is '_gapTrackClicks'
+		if commandArray.length is 1 && commandArray[0] is '_gapTrackLinkClicks'
 			root.document.getElementsByTagName('body')[0].onmousedown = (event) ->
 				target = event.target || event.srcElement
 
@@ -42,7 +42,7 @@ class GapClickTracker
 					text = target.innerText || target.textContent
 					href = target.href || ''
 
-					root._gap.push(['_trackEvent', 'gapClick', text.replace(/^\s+|\s+$/g, '') + ' (' + href + ')'])
+					root._gap.push(['_trackEvent', 'gapLinkClick', text.replace(/^\s+|\s+$/g, '') + ' (' + href + ')'])
 
 unless root._gap? then root._gap = []
 unless root._gaq? then root._gaq = []
@@ -56,7 +56,7 @@ unless root._gaq? then root._gaq = []
 		root._gapReadTracker = new GapReadTracker()
 		root._gap = new Gap(root._gap, [
 			new GapReadTracker(),
-			new GapClickTracker()
+			new GapLinkClickTracker()
 		])
 
 	s = document.getElementsByTagName('script')[0]
