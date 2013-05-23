@@ -10,7 +10,7 @@ _gap.push(["_setAccount", "UA-XXXXXX-X"]); // CHANGE.
 _gap.push(["_trackPageview"]);
 _gap.push(["_gapTrackBounce", 10]);
 _gap.push(["_gapTrackReads", 20, 30]);
-_gap.push(["_gapTrackClicks"]);
+_gap.push(["_gapTrackLinkClicks"]);
 
 (function() {
 	var gap = document.createElement("script");
