@@ -3,6 +3,7 @@ root = exports ? this
 class Gap
 	history: []
 	subscribers: []
+	variables: {}
 
 	constructor: (previous, subscribers) ->
 		@isArray(subscribers) && @subscribe(subscriber) for subscriber in subscribers
@@ -10,7 +11,8 @@ class Gap
 
 	isArray: (args) -> args? && {}.toString.call(args) is '[object Array]' && args.length > 0
 
-	publish: (commandArray) -> subscriber.listen(commandArray) for subscriber in @subscribers
+	publish: (commandArray) -> 
+		subscriber.listen(commandArray, this) for subscriber in @subscribers
 
 	push: (commandArray) ->
 		if @isArray(commandArray) && @isArray(commandArray[0]) then @push(i) for i in commandArray
@@ -25,19 +27,30 @@ class Gap
 
 	subscribe: (subscriber) -> @subscribers.push(subscriber)
 
+class GapBounceTracker
+	listen: (commandArray, gap) ->
+		if commandArray.length is 2 && commandArray[0] is '_gapTrackBounce' && typeof commandArray[1] is 'number'
+			root.setTimeout(
+				(() -> root._gap.push(['_trackEvent', 'gapBounce', commandArray[1].toString()]))
+				, commandArray[1] * 1000
+			)
+
 class GapReadTracker
-	listen: (commandArray) ->
-		if commandArray.length is 2 && commandArray[0] is '_gapTrackReads' && typeof commandArray[1] is 'number'
-			root._gapSeconds = 0
-			root.setInterval(
-				fn = () -> 
-					root._gap.push(['_trackEvent', 'gapRead', (root._gapSeconds += commandArray[1]).toString()])
-					fn
+	listen: (commandArray, gap) ->
+		if commandArray.length is 3 && commandArray[0] is '_gapTrackReads' && typeof commandArray[1] is 'number' && typeof commandArray[2] is 'number'
+			gap.variables['gapReadTrackerSeconds'] = 0
+			gap.variables['gapReadTrackerSecondsMax'] = commandArray[1] * commandArray[2]
+			gap.variables['gapReadTrackerInterval'] = root.setInterval(
+				fn = () ->
+					if root._gap.variables['gapReadTrackerSeconds'] < root._gap.variables['gapReadTrackerSecondsMax']
+						root._gap.push(['_trackEvent', 'gapRead', (root._gap.variables['gapReadTrackerSeconds'] += commandArray[1]).toString()])
+						fn
+					else clearInterval(root._gap.variables['gapReadTrackerInterval'])
 				, commandArray[1] * 1000
 			)
 
 class GapLinkClickTracker
-	listen: (commandArray) ->
+	listen: (commandArray, gap) ->
 		if commandArray.length is 1 && commandArray[0] is '_gapTrackLinkClicks'
 			root.document.getElementsByTagName('body')[0].onmousedown = (event) ->
 				target = event.target || event.srcElement
@@ -59,6 +72,7 @@ unless root._gaq? then root._gaq = []
 	ga.onload = ga.onreadystatechange = () -> 
 		root._gapReadTracker = new GapReadTracker()
 		root._gap = new Gap(root._gap, [
+			new GapBounceTracker(),
 			new GapReadTracker(),
 			new GapLinkClickTracker()
 		])

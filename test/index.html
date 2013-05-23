@@ -9,8 +9,8 @@
 		<div id="qunit"></div>
 		<div id="qunit-fixture"></div>
 
-		<a href="" id="testA">Test A</a>
-		<form action="">
+		<a href="#testA" id="testA">Test A</a>
+		<form action="#testButton">
 			<button type="submit" id="testButton">Test Button</button>
 		</form>
 
@@ -19,8 +19,9 @@
 			var _gap = _gap || [];
 			_gap.push(["_setAccount", "UA-XXXXXXXX-X"]);
 			_gap.push(["_trackPageview"]);
-			_gap.push(["_gapTrackReads", 1]);
-			_gap.push(["_gapTrackClicks"]);
+			_gap.push(["_gapTrackBounce", 1]);
+			_gap.push(["_gapTrackReads", 1, 2]);
+			_gap.push(["_gapTrackLinkClicks"]);
 			_gapDebug = 1;
 
 			(function() {
