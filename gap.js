@@ -161,14 +161,9 @@
           if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !this.hasSessionCookie && !gap.bounced) {
             gap.variables['gapBounceViaScrollTrackerPercentage'] = commandArray[1];
             return this.append(function(event) {
-              var percent;
-
-              if (!gap.bounced) {
-                percent = ((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100;
-                if (percent >= root._gap.variables['gapBounceViaScrollTrackerPercentage']) {
-                  root._gap.bounced = true;
-                  return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables['gapBounceViaScrollTrackerPercentage']]);
-                }
+              if (!gap.bounced && ((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 >= root._gap.variables['gapBounceViaScrollTrackerPercentage']) {
+                root._gap.bounced = true;
+                return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables['gapBounceViaScrollTrackerPercentage']]);
               }
             });
           }

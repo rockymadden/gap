@@ -37,7 +37,11 @@ class GapTimeTracker
 				not @hasSessionCookie
 
 					gap.variables['gapBounceViaTimeTrackerTimeout'] = root.setTimeout(
-						(() -> root._gap.push(['_trackEvent', 'gapBounceViaTime', commandArray[1].toString()])),
+						(() -> root._gap.push([
+							'_trackEvent',
+							'gapBounceViaTime',
+							commandArray[1].toString()
+						])),
 						commandArray[1] * 1000
 					)
 			when '_gapTrackReads'
@@ -83,7 +87,11 @@ class GapMousedownTracker
 						text = target.innerText || target.textContent
 						href = target.href || ''
 
-						root._gap.push(['_trackEvent', 'gapLinkClick', text.replace(/^\s+|\s+$/g, '') + ' (' + href + ')'])
+						root._gap.push([
+							'_trackEvent',
+							'gapLinkClick',
+							text.replace(/^\s+|\s+$/g, '') + ' (' + href + ')'
+						])
 				)
 
 class GapScrollTracker
@@ -108,12 +116,16 @@ class GapScrollTracker
 
 					gap.variables['gapBounceViaScrollTrackerPercentage'] = commandArray[1]
 					@append((event) ->
-						if not gap.bounced
-							percent = ((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100
+						if not gap.bounced &&
+						((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 \
+						>= root._gap.variables['gapBounceViaScrollTrackerPercentage']
 
-							if percent >= root._gap.variables['gapBounceViaScrollTrackerPercentage']
-								root._gap.bounced = true
-								root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables['gapBounceViaScrollTrackerPercentage']])
+							root._gap.bounced = true
+							root._gap.push([
+								'_trackEvent',
+								'gapBounceViaScroll',
+								root._gap.variables['gapBounceViaScrollTrackerPercentage']
+							])
 					)
 
 class GapUtil
