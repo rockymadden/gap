@@ -2,6 +2,7 @@ root = exports ? this
 
 class Gap
 	bounced: false
+	cookied: false
 	history: []
 	subscribers: []
 	variables: {}
@@ -27,24 +28,25 @@ class Gap
 	subscribe: (subscriber) -> @subscribers.push(subscriber)
 
 class GapTimeTracker
-	constructor: (hasSessionCookie) -> @hasSessionCookie = hasSessionCookie
+	constructor: () ->
 
 	listen: (commandArray, gap) ->
 		switch commandArray[0]
 			when '_gapTrackBounceViaTime'
 				if commandArray.length is 2 &&
 				typeof commandArray[1] is 'number' &&
-				not @hasSessionCookie &&
+				not gap.cookied &&
 				not gap.bounced
 
 					gap.variables['gapBounceViaTimeTrackerTimeout'] = root.setTimeout(
 						(() -> 
-							root._gap.bounced = true
-							root._gap.push([
-								'_trackEvent',
-								'gapBounceViaTime',
-								commandArray[1].toString()
-							])
+							if not root._gap.bounced
+								root._gap.bounced = true
+								root._gap.push([
+									'_trackEvent',
+									'gapBounceViaTime',
+									commandArray[1].toString()
+								])
 						),
 						commandArray[1] * 1000
 					)
@@ -115,7 +117,7 @@ class GapScrollTracker
 			when '_gapTrackBounceViaScroll'
 				if commandArray.length is 2 &&
 				typeof commandArray[1] is 'number' &&
-				not @hasSessionCookie &&
+				not gap.cookied &&
 				not gap.bounced
 
 					gap.variables['gapBounceViaScrollTrackerPercentage'] = commandArray[1]
@@ -166,10 +168,11 @@ unless root._gaq? then root._gaq = []
 	ga.src = if root.location.protocol is 'https:' then 'https://ssl' else 'http://www' + '.google-analytics.com/ga.js'
 	ga.onload = ga.onreadystatechange = () -> 
 		root._gap = new Gap(root._gap, [
-			new GapTimeTracker(hc),
+			new GapTimeTracker(),
 			new GapMousedownTracker(),
 			new GapScrollTracker(),
 		])
+	root._gap.cookied = hc
 
 	s = root.document.getElementsByTagName('script')[0]
 	s.parentNode.insertBefore(ga, s)

@@ -6,6 +6,8 @@
   Gap = (function() {
     Gap.prototype.bounced = false;
 
+    Gap.prototype.cookied = false;
+
     Gap.prototype.history = [];
 
     Gap.prototype.subscribers = [];
@@ -66,19 +68,19 @@
   })();
 
   GapTimeTracker = (function() {
-    function GapTimeTracker(hasSessionCookie) {
-      this.hasSessionCookie = hasSessionCookie;
-    }
+    function GapTimeTracker() {}
 
     GapTimeTracker.prototype.listen = function(commandArray, gap) {
       var fn;
 
       switch (commandArray[0]) {
         case '_gapTrackBounceViaTime':
-          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !this.hasSessionCookie && !gap.bounced) {
+          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !gap.cookied && !gap.bounced) {
             return gap.variables['gapBounceViaTimeTrackerTimeout'] = root.setTimeout((function() {
-              root._gap.bounced = true;
-              return root._gap.push(['_trackEvent', 'gapBounceViaTime', commandArray[1].toString()]);
+              if (!root._gap.bounced) {
+                root._gap.bounced = true;
+                return root._gap.push(['_trackEvent', 'gapBounceViaTime', commandArray[1].toString()]);
+              }
             }), commandArray[1] * 1000);
           }
           break;
@@ -159,7 +161,7 @@
     GapScrollTracker.prototype.listen = function(commandArray, gap) {
       switch (commandArray[0]) {
         case '_gapTrackBounceViaScroll':
-          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !this.hasSessionCookie && !gap.bounced) {
+          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !gap.cookied && !gap.bounced) {
             gap.variables['gapBounceViaScrollTrackerPercentage'] = commandArray[1];
             return this.append(function(event) {
               if (!gap.bounced && ((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 >= root._gap.variables['gapBounceViaScrollTrackerPercentage']) {
@@ -219,8 +221,9 @@
     ga.type = 'text/javascript';
     ga.src = root.location.protocol === 'https:' ? 'https://ssl' : 'http://www' + '.google-analytics.com/ga.js';
     ga.onload = ga.onreadystatechange = function() {
-      return root._gap = new Gap(root._gap, [new GapTimeTracker(hc), new GapMousedownTracker(), new GapScrollTracker()]);
+      return root._gap = new Gap(root._gap, [new GapTimeTracker(), new GapMousedownTracker(), new GapScrollTracker()]);
     };
+    root._gap.cookied = hc;
     s = root.document.getElementsByTagName('script')[0];
     return s.parentNode.insertBefore(ga, s);
   })();
