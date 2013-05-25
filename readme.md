@@ -30,7 +30,7 @@ __gapTrackBounceViaScroll__
 
 Logs a single ```gapBounceViaScroll``` event after scrolling n percentage down the page. This event will only fire once per session.
 
-If you do not consider users who fully scroll (to your specified requirement) down your page on your website a bounce, this tracker can help you. The default implementation of the Google Analytics tracking code has some undesirable traits. The following scenarios help illustrate: 
+If you do not consider users who fully scroll (to your specified requirement) down your page a bounce, this tracker can help you. The default implementation of the Google Analytics tracking code has some undesirable traits. The following scenarios help illustrate: 
 
 * User A arrives on your website. He finds a wealth of information he is looking for on the first landing page. He fully scrolls/reads the entire page and then departs. By default, this is considered a bounce.
 * More information on this subject, [straight from Google](http://analytics.blogspot.com/2012/07/tracking-adjusted-bounce-rate-in-google.html).
