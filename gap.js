@@ -146,7 +146,7 @@
   (function() {
     var ga, s;
 
-    ga = document.createElement('script');
+    ga = root.document.createElement('script');
     ga.async = true;
     ga.type = 'text/javascript';
     ga.src = root.location.protocol === 'https:' ? 'https://ssl' : 'http://www' + '.google-analytics.com/ga.js';
@@ -154,7 +154,7 @@
       root._gapReadTracker = new GapReadTracker();
       return root._gap = new Gap(root._gap, [new GapBounceTracker(), new GapReadTracker(), new GapLinkClickTracker()]);
     };
-    s = document.getElementsByTagName('script')[0];
+    s = root.document.getElementsByTagName('script')[0];
     return s.parentNode.insertBefore(ga, s);
   })();
 

@@ -76,7 +76,7 @@ unless root._gap? then root._gap = []
 unless root._gaq? then root._gaq = []
 
 (() ->
-	ga = document.createElement 'script'
+	ga = root.document.createElement 'script'
 	ga.async = true
 	ga.type = 'text/javascript'
 	ga.src = if root.location.protocol is 'https:' then 'https://ssl' else 'http://www' + '.google-analytics.com/ga.js'
@@ -88,7 +88,7 @@ unless root._gaq? then root._gaq = []
 			new GapLinkClickTracker()
 		])
 
-	s = document.getElementsByTagName('script')[0]
+	s = root.document.getElementsByTagName('script')[0]
 	s.parentNode.insertBefore(ga, s)
 )()
 
