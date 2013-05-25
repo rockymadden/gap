@@ -16,7 +16,6 @@ test '_gapTrackBounce', () ->
 		1250
 	)
 
-
 test '_gapTrackReads', () ->
 	stop()
 

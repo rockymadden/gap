@@ -69,7 +69,7 @@ _gap.push([
 
 __gapTrackLinkClicks__
 
-Tracker which logs ```a``` and ```button``` mousedown events (i.e. user clicks) via event delegation. Event action logged is ```gapLinkClick```. Event label logged is ```#{linkName} (#{linkURL})```.
+Logs ```a``` and ```button``` mousedown events (i.e. user clicks) via event delegation. Event action logged is ```gapLinkClick```. Event label logged is ```#{linkName} (#{linkURL})```.
 
 ```javascript
 _gap.push(["_gapTrackLinkClicks"]);
