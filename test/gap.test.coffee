@@ -4,12 +4,12 @@ test '_gap global variable is available', 1, () ->
 test '_gaq global variable is available', 1, () ->
 	ok _gaq?
 
-test '_gapTrackBounce', () ->
+test '_gapTrackBounceViaTime', () ->
 	stop()
 
 	setTimeout(
 		(() ->
-			reads = (i for i in _gap.history when i.length > 1 and i[1] is 'gapBounce')
+			reads = (i for i in _gap.history when i.length > 1 and i[1] is 'gapBounceViaTime')
 			ok reads.length == 1
 			start()
 		),

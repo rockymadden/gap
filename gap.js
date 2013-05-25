@@ -1,24 +1,11 @@
 (function() {
-  var Gap, GapBounceTracker, GapLinkClickTracker, GapReadTracker, GapUtil, root;
+  var Gap, GapMousedownTracker, GapScrollTracker, GapTimeTracker, GapUtil, root;
 
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
 
-  GapUtil = (function() {
-    function GapUtil() {}
-
-    GapUtil.isCommandArray = function(args) {
-      return (args != null) && {}.toString.call(args) === '[object Array]' && args.length > 0;
-    };
-
-    GapUtil.hasCookie = function(name) {
-      return root.document.cookie.indexOf(name) >= 0;
-    };
-
-    return GapUtil;
-
-  })();
-
   Gap = (function() {
+    Gap.prototype.bounced = false;
+
     Gap.prototype.history = [];
 
     Gap.prototype.subscribers = [];
@@ -78,66 +65,144 @@
 
   })();
 
-  GapBounceTracker = (function() {
-    function GapBounceTracker(hasSessionCookie) {
+  GapTimeTracker = (function() {
+    function GapTimeTracker(hasSessionCookie) {
       this.hasSessionCookie = hasSessionCookie;
     }
 
-    GapBounceTracker.prototype.listen = function(commandArray, gap) {
-      if (commandArray.length === 2 && commandArray[0] === '_gapTrackBounce' && typeof commandArray[1] === 'number' && !this.hasSessionCookie) {
-        return root.setTimeout((function() {
-          return root._gap.push(['_trackEvent', 'gapBounce', commandArray[1].toString()]);
-        }), commandArray[1] * 1000);
-      }
-    };
-
-    return GapBounceTracker;
-
-  })();
-
-  GapReadTracker = (function() {
-    function GapReadTracker() {}
-
-    GapReadTracker.prototype.listen = function(commandArray, gap) {
+    GapTimeTracker.prototype.listen = function(commandArray, gap) {
       var fn;
 
-      if (commandArray.length === 3 && commandArray[0] === '_gapTrackReads' && typeof commandArray[1] === 'number' && typeof commandArray[2] === 'number') {
-        gap.variables['gapReadTrackerSeconds'] = 0;
-        gap.variables['gapReadTrackerSecondsMax'] = commandArray[1] * commandArray[2];
-        return gap.variables['gapReadTrackerInterval'] = root.setInterval(fn = function() {
-          if (root._gap.variables['gapReadTrackerSeconds'] < root._gap.variables['gapReadTrackerSecondsMax']) {
-            root._gap.push(['_trackEvent', 'gapRead', (root._gap.variables['gapReadTrackerSeconds'] += commandArray[1]).toString()]);
-            return fn;
-          } else {
-            return clearInterval(root._gap.variables['gapReadTrackerInterval']);
+      switch (commandArray[0]) {
+        case '_gapTrackBounceViaTime':
+          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !this.hasSessionCookie) {
+            return gap.variables['gapBounceViaTimeTrackerTimeout'] = root.setTimeout((function() {
+              return root._gap.push(['_trackEvent', 'gapBounceViaTime', commandArray[1].toString()]);
+            }), commandArray[1] * 1000);
           }
-        }, commandArray[1] * 1000);
+          break;
+        case '_gapTrackReads':
+          if (commandArray.length === 3 && typeof commandArray[1] === 'number' && typeof commandArray[2] === 'number') {
+            gap.variables['gapReadTrackerSeconds'] = 0;
+            gap.variables['gapReadTrackerSecondsMax'] = commandArray[1] * commandArray[2];
+            return gap.variables['gapReadTrackerInterval'] = root.setInterval(fn = (function() {
+              if (root._gap.variables['gapReadTrackerSeconds'] < root._gap.variables['gapReadTrackerSecondsMax']) {
+                root._gap.push(['_trackEvent', 'gapRead', (root._gap.variables['gapReadTrackerSeconds'] += commandArray[1]).toString()]);
+                return fn;
+              } else {
+                return clearInterval(root._gap.variables['gapReadTrackerInterval']);
+              }
+            }), commandArray[1] * 1000);
+          }
       }
     };
 
-    return GapReadTracker;
+    return GapTimeTracker;
 
   })();
 
-  GapLinkClickTracker = (function() {
-    function GapLinkClickTracker() {}
+  GapMousedownTracker = (function() {
+    function GapMousedownTracker() {}
 
-    GapLinkClickTracker.prototype.listen = function(commandArray, gap) {
-      if (commandArray.length === 1 && commandArray[0] === '_gapTrackLinkClicks') {
+    GapMousedownTracker.prototype.append = function(f) {
+      var omd;
+
+      omd = root.document.getElementsByTagName('body')[0].onmousedown;
+      if (omd == null) {
+        return root.document.getElementsByTagName('body')[0].onmousedown = f;
+      } else {
         return root.document.getElementsByTagName('body')[0].onmousedown = function(event) {
-          var href, target, text;
-
-          target = event.target || event.srcElement;
-          if ((target != null) && (target.nodeName === 'A' || target.nodeName === 'BUTTON')) {
-            text = target.innerText || target.textContent;
-            href = target.href || '';
-            return root._gap.push(['_trackEvent', 'gapLinkClick', text.replace(/^\s+|\s+$/g, '') + ' (' + href + ')']);
-          }
+          omd(event);
+          return f(event);
         };
       }
     };
 
-    return GapLinkClickTracker;
+    GapMousedownTracker.prototype.listen = function(commandArray, gap) {
+      switch (commandArray[0]) {
+        case '_gapTrackLinkClicks':
+          return this.append(function(event) {
+            var href, target, text;
+
+            target = event.target || event.srcElement;
+            if ((target != null) && (target.nodeName === 'A' || target.nodeName === 'BUTTON')) {
+              text = target.innerText || target.textContent;
+              href = target.href || '';
+              return root._gap.push(['_trackEvent', 'gapLinkClick', text.replace(/^\s+|\s+$/g, '') + ' (' + href + ')']);
+            }
+          });
+      }
+    };
+
+    return GapMousedownTracker;
+
+  })();
+
+  GapScrollTracker = (function() {
+    function GapScrollTracker() {}
+
+    GapScrollTracker.prototype.append = function(f) {
+      var os;
+
+      os = window.onscroll;
+      if (os == null) {
+        return window.onscroll = f;
+      } else {
+        return window.onscroll = function(event) {
+          os(event);
+          return f(event);
+        };
+      }
+    };
+
+    GapScrollTracker.prototype.listen = function(commandArray, gap) {
+      switch (commandArray[0]) {
+        case '_gapTrackBounceViaScroll':
+          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !this.hasSessionCookie && !gap.bounced) {
+            gap.variables['gapBounceViaScrollTrackerPercentage'] = commandArray[1];
+            return this.append(function(event) {
+              var percent;
+
+              if (!gap.bounced) {
+                percent = ((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100;
+                if (percent >= root._gap.variables['gapBounceViaScrollTrackerPercentage']) {
+                  root._gap.bounced = true;
+                  return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables['gapBounceViaScrollTrackerPercentage']]);
+                }
+              }
+            });
+          }
+      }
+    };
+
+    return GapScrollTracker;
+
+  })();
+
+  GapUtil = (function() {
+    function GapUtil() {}
+
+    GapUtil.documentHeight = function() {
+      return Math.max(root.document.body.scrollHeight || 0, root.document.documentElement.scrollHeight || 0, root.document.body.offsetHeight || 0, root.document.documentElement.offsetHeight || 0, root.document.body.clientHeight || 0, root.document.documentElement.clientHeight || 0);
+    };
+
+    GapUtil.isCommandArray = function(args) {
+      return (args != null) && {}.toString.call(args) === '[object Array]' && args.length > 0;
+    };
+
+    GapUtil.hasCookie = function(name) {
+      return root.document.cookie.indexOf(name) >= 0;
+    };
+
+    GapUtil.windowHeight = function() {
+      return root.window.innerHeight || root.document.documentElement.clientHeight || root.document.body.clientHeight || 0;
+    };
+
+    GapUtil.windowScroll = function() {
+      return root.window.pageYOffset || root.document.body.scrollTop || root.document.documentElement.scrollTop || 0;
+    };
+
+    return GapUtil;
 
   })();
 
@@ -158,8 +223,7 @@
     ga.type = 'text/javascript';
     ga.src = root.location.protocol === 'https:' ? 'https://ssl' : 'http://www' + '.google-analytics.com/ga.js';
     ga.onload = ga.onreadystatechange = function() {
-      root._gapReadTracker = new GapReadTracker();
-      return root._gap = new Gap(root._gap, [new GapBounceTracker(hc), new GapReadTracker(), new GapLinkClickTracker()]);
+      return root._gap = new Gap(root._gap, [new GapTimeTracker(hc), new GapMousedownTracker(), new GapScrollTracker()]);
     };
     s = root.document.getElementsByTagName('script')[0];
     return s.parentNode.insertBefore(ga, s);

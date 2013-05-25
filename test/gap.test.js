@@ -7,7 +7,7 @@
     return ok(typeof _gaq !== "undefined" && _gaq !== null);
   });
 
-  test('_gapTrackBounce', function() {
+  test('_gapTrackBounceViaTime', function() {
     stop();
     return setTimeout((function() {
       var i, reads;
@@ -19,7 +19,7 @@
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           i = _ref[_i];
-          if (i.length > 1 && i[1] === 'gapBounce') {
+          if (i.length > 1 && i[1] === 'gapBounceViaTime') {
             _results.push(i);
           }
         }
