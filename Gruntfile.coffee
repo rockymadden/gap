@@ -6,11 +6,15 @@ module.exports = (grunt) ->
 				files: 'gap.js': 'src/gap.coffee'
 			tests: 
 				files: 'test/gap.test.js': 'test/gap.test.coffee'
+		uglify:
+			release:
+				files: 'gap.min.js': 'gap.js'
 		qunit: 
 			all: ['test/*.html']
 
-	grunt.loadNpmTasks 'grunt-contrib-qunit'
-	grunt.loadNpmTasks 'grunt-contrib-coffee'
+	grunt.loadNpmTasks('grunt-contrib-coffee')
+	grunt.loadNpmTasks('grunt-contrib-uglify')
+	grunt.loadNpmTasks('grunt-contrib-qunit')
 
-	grunt.registerTask 'default', ['coffee']
-	grunt.registerTask 'test', ['qunit', 'coffee']
+	grunt.registerTask('default', ['coffee', 'uglify'])
+	grunt.registerTask('test', ['qunit', 'coffee', 'uglify'])

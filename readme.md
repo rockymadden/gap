@@ -2,7 +2,7 @@
 Dead simple wrapper around the Google Analytics API which provides automatic tracking of user behaviors via events. Want to see the event tracking in action? Open up your JavaScript console and head to the [project site](http://rockymadden.com/gap/).
 
 ##Installation
-There is no need to include any of the default Google Analytics tracking code, as GAP takes care of all this for you. Simply [download the gap.js](https://raw.github.com/rockymadden/gap/master/gap.js) file, place on your server, and update the noted fields below. That's it!
+There is no need to include any of the default Google Analytics tracking code, as GAP takes care of all this for you. Simply [download the gap.min.js](https://raw.github.com/rockymadden/gap/master/gap.min.js) file, place on your server, and update the noted fields below. That's it!
 
 ```javascript
 var _gap = _gap || [];
@@ -16,7 +16,7 @@ _gap.push(["_gapTrackLinkClicks"]);
 	var gap = document.createElement("script");
 	gap.async = true;
 	gap.type = "text/javascript";
-	gap.src = "/js/gap.js"; // CHANGE.
+	gap.src = "/js/gap.min.js"; // CHANGE.
 
 	var s = document.getElementsByTagName("script")[0];
 	s.parentNode.insertBefore(gap, s);
