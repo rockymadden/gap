@@ -5,6 +5,8 @@ class GapUtil
 
 	@isCommandArray: (args) -> args? && {}.toString.call(args) is '[object Array]' && args.length > 0
 
+	@hasSessionCookie: () -> root.document.cookie.indexOf("__utmb") >= 0
+
 class Gap
 	history: []
 	subscribers: []
@@ -31,14 +33,22 @@ class Gap
 	subscribe: (subscriber) -> @subscribers.push(subscriber)
 
 class GapBounceTracker
+	constructor: (hasSessionCookie) -> @hasSessionCookie = hasSessionCookie
+
 	listen: (commandArray, gap) ->
-		if commandArray.length is 2 && commandArray[0] is '_gapTrackBounce' && typeof commandArray[1] is 'number'
+		if commandArray.length is 2 &&
+		commandArray[0] is '_gapTrackBounce' &&
+		typeof commandArray[1] is 'number' &&
+		not @hasSessionCookie
+
 			root.setTimeout(
 				(() -> root._gap.push(['_trackEvent', 'gapBounce', commandArray[1].toString()]))
 				, commandArray[1] * 1000
 			)
 
 class GapReadTracker
+	constructor: () ->
+
 	listen: (commandArray, gap) ->
 		if commandArray.length is 3 &&
 		commandArray[0] is '_gapTrackReads' &&
@@ -61,8 +71,12 @@ class GapReadTracker
 			)
 
 class GapLinkClickTracker
+	constructor: () ->
+
 	listen: (commandArray, gap) ->
-		if commandArray.length is 1 && commandArray[0] is '_gapTrackLinkClicks'
+		if commandArray.length is 1 &&
+		commandArray[0] is '_gapTrackLinkClicks'
+
 			root.document.getElementsByTagName('body')[0].onmousedown = (event) ->
 				target = event.target || event.srcElement
 
@@ -76,6 +90,7 @@ unless root._gap? then root._gap = []
 unless root._gaq? then root._gaq = []
 
 (() ->
+	hsc = GapUtil.hasSessionCookie()
 	ga = root.document.createElement 'script'
 	ga.async = true
 	ga.type = 'text/javascript'
@@ -83,7 +98,7 @@ unless root._gaq? then root._gaq = []
 	ga.onload = ga.onreadystatechange = () -> 
 		root._gapReadTracker = new GapReadTracker()
 		root._gap = new Gap(root._gap, [
-			new GapBounceTracker(),
+			new GapBounceTracker(hsc),
 			new GapReadTracker(),
 			new GapLinkClickTracker()
 		])
