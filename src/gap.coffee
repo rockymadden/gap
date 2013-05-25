@@ -7,7 +7,8 @@ class Gap
 	subscribers: []
 	variables: {}
 
-	constructor: (previous, subscribers) ->
+	constructor: (previous, subscribers, cookied) ->
+		@cookied = cookied
 		GapUtil.isCommandArray(subscribers) && @subscribe(subscriber) for subscriber in subscribers
 		GapUtil.isCommandArray(previous) && @push(previous)
 
@@ -167,12 +168,14 @@ unless root._gaq? then root._gaq = []
 	ga.type = 'text/javascript'
 	ga.src = if root.location.protocol is 'https:' then 'https://ssl' else 'http://www' + '.google-analytics.com/ga.js'
 	ga.onload = ga.onreadystatechange = () -> 
-		root._gap = new Gap(root._gap, [
-			new GapTimeTracker(),
-			new GapMousedownTracker(),
-			new GapScrollTracker(),
-		])
-	root._gap.cookied = hc
+		root._gap = new Gap(root._gap,
+			[
+				new GapTimeTracker(),
+				new GapMousedownTracker(),
+				new GapScrollTracker(),
+			],
+			hc
+		)
 
 	s = root.document.getElementsByTagName('script')[0]
 	s.parentNode.insertBefore(ga, s)

@@ -14,9 +14,10 @@
 
     Gap.prototype.variables = {};
 
-    function Gap(previous, subscribers) {
+    function Gap(previous, subscribers, cookied) {
       var subscriber, _i, _len;
 
+      this.cookied = cookied;
       for (_i = 0, _len = subscribers.length; _i < _len; _i++) {
         subscriber = subscribers[_i];
         GapUtil.isCommandArray(subscribers) && this.subscribe(subscriber);
@@ -221,9 +222,8 @@
     ga.type = 'text/javascript';
     ga.src = root.location.protocol === 'https:' ? 'https://ssl' : 'http://www' + '.google-analytics.com/ga.js';
     ga.onload = ga.onreadystatechange = function() {
-      return root._gap = new Gap(root._gap, [new GapTimeTracker(), new GapMousedownTracker(), new GapScrollTracker()]);
+      return root._gap = new Gap(root._gap, [new GapTimeTracker(), new GapMousedownTracker(), new GapScrollTracker()], hc);
     };
-    root._gap.cookied = hc;
     s = root.document.getElementsByTagName('script')[0];
     return s.parentNode.insertBefore(ga, s);
   })();
