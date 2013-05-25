@@ -5,7 +5,7 @@ class GapUtil
 
 	@isCommandArray: (args) -> args? && {}.toString.call(args) is '[object Array]' && args.length > 0
 
-	@hasSessionCookie: () -> root.document.cookie.indexOf("__utmb") >= 0
+	@hasCookie: (name) -> root.document.cookie.indexOf(name) >= 0
 
 class Gap
 	history: []
@@ -90,7 +90,7 @@ unless root._gap? then root._gap = []
 unless root._gaq? then root._gaq = []
 
 (() ->
-	hsc = GapUtil.hasSessionCookie()
+	hc = GapUtil.hasCookie("__utmb")
 	ga = root.document.createElement 'script'
 	ga.async = true
 	ga.type = 'text/javascript'
@@ -98,7 +98,7 @@ unless root._gaq? then root._gaq = []
 	ga.onload = ga.onreadystatechange = () -> 
 		root._gapReadTracker = new GapReadTracker()
 		root._gap = new Gap(root._gap, [
-			new GapBounceTracker(hsc),
+			new GapBounceTracker(hc),
 			new GapReadTracker(),
 			new GapLinkClickTracker()
 		])

@@ -10,8 +10,8 @@
       return (args != null) && {}.toString.call(args) === '[object Array]' && args.length > 0;
     };
 
-    GapUtil.hasSessionCookie = function() {
-      return root.document.cookie.indexOf("__utmb") >= 0;
+    GapUtil.hasCookie = function(name) {
+      return root.document.cookie.indexOf(name) >= 0;
     };
 
     return GapUtil;
@@ -150,16 +150,16 @@
   }
 
   (function() {
-    var ga, hsc, s;
+    var ga, hc, s;
 
-    hsc = GapUtil.hasSessionCookie();
+    hc = GapUtil.hasCookie("__utmb");
     ga = root.document.createElement('script');
     ga.async = true;
     ga.type = 'text/javascript';
     ga.src = root.location.protocol === 'https:' ? 'https://ssl' : 'http://www' + '.google-analytics.com/ga.js';
     ga.onload = ga.onreadystatechange = function() {
       root._gapReadTracker = new GapReadTracker();
-      return root._gap = new Gap(root._gap, [new GapBounceTracker(hsc), new GapReadTracker(), new GapLinkClickTracker()]);
+      return root._gap = new Gap(root._gap, [new GapBounceTracker(hc), new GapReadTracker(), new GapLinkClickTracker()]);
     };
     s = root.document.getElementsByTagName('script')[0];
     return s.parentNode.insertBefore(ga, s);
