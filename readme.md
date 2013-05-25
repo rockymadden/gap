@@ -27,7 +27,7 @@ _gap.push(["_gapTrackLinkClicks"]);
 
 __gapTrackBounce__
 
-Logs a single ```gapBounce``` event after n seconds. 
+Logs a single ```gapBounce``` event after n seconds. This event will only fire once per session.
 
 If you do not consider users who spend long durations, or even minutes, on their first and only page visit on your website a bounce, this tracker can help you. The default implementation of the Google Analytics tracking code has some undesirable traits. The following scenarios help illustrate: 
 
