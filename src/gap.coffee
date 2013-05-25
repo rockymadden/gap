@@ -34,14 +34,18 @@ class GapTimeTracker
 			when '_gapTrackBounceViaTime'
 				if commandArray.length is 2 &&
 				typeof commandArray[1] is 'number' &&
-				not @hasSessionCookie
+				not @hasSessionCookie &&
+				not gap.bounced
 
 					gap.variables['gapBounceViaTimeTrackerTimeout'] = root.setTimeout(
-						(() -> root._gap.push([
-							'_trackEvent',
-							'gapBounceViaTime',
-							commandArray[1].toString()
-						])),
+						(() -> 
+							root._gap.bounced = true
+							root._gap.push([
+								'_trackEvent',
+								'gapBounceViaTime',
+								commandArray[1].toString()
+							])
+						),
 						commandArray[1] * 1000
 					)
 			when '_gapTrackReads'

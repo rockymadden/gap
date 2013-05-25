@@ -75,8 +75,9 @@
 
       switch (commandArray[0]) {
         case '_gapTrackBounceViaTime':
-          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !this.hasSessionCookie) {
+          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !this.hasSessionCookie && !gap.bounced) {
             return gap.variables['gapBounceViaTimeTrackerTimeout'] = root.setTimeout((function() {
+              root._gap.bounced = true;
               return root._gap.push(['_trackEvent', 'gapBounceViaTime', commandArray[1].toString()]);
             }), commandArray[1] * 1000);
           }
