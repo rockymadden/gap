@@ -1,7 +1,18 @@
 (function() {
-  var Gap, GapBounceTracker, GapLinkClickTracker, GapReadTracker, root;
+  var Gap, GapBounceTracker, GapLinkClickTracker, GapReadTracker, GapUtil, root;
 
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
+
+  GapUtil = (function() {
+    function GapUtil() {}
+
+    GapUtil.isCommandArray = function(args) {
+      return (args != null) && {}.toString.call(args) === '[object Array]' && args.length > 0;
+    };
+
+    return GapUtil;
+
+  })();
 
   Gap = (function() {
     Gap.prototype.history = [];
@@ -15,14 +26,10 @@
 
       for (_i = 0, _len = subscribers.length; _i < _len; _i++) {
         subscriber = subscribers[_i];
-        this.isArray(subscribers) && this.subscribe(subscriber);
+        GapUtil.isCommandArray(subscribers) && this.subscribe(subscriber);
       }
-      this.isArray(previous) && this.push(previous);
+      GapUtil.isCommandArray(previous) && this.push(previous);
     }
-
-    Gap.prototype.isArray = function(args) {
-      return (args != null) && {}.toString.call(args) === '[object Array]' && args.length > 0;
-    };
 
     Gap.prototype.publish = function(commandArray) {
       var subscriber, _i, _len, _ref, _results;
@@ -39,14 +46,14 @@
     Gap.prototype.push = function(commandArray) {
       var i, _i, _len, _results;
 
-      if (this.isArray(commandArray) && this.isArray(commandArray[0])) {
+      if (GapUtil.isCommandArray(commandArray) && GapUtil.isCommandArray(commandArray[0])) {
         _results = [];
         for (_i = 0, _len = commandArray.length; _i < _len; _i++) {
           i = commandArray[_i];
           _results.push(this.push(i));
         }
         return _results;
-      } else if (this.isArray(commandArray)) {
+      } else if (GapUtil.isCommandArray(commandArray)) {
         if (commandArray[0].indexOf('_gap') === 0) {
           return this.publish(commandArray);
         } else {

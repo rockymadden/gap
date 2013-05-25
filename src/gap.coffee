@@ -1,22 +1,25 @@
 root = exports ? this
 
+class GapUtil
+	constructor: () ->
+
+	@isCommandArray: (args) -> args? && {}.toString.call(args) is '[object Array]' && args.length > 0
+
 class Gap
 	history: []
 	subscribers: []
 	variables: {}
 
 	constructor: (previous, subscribers) ->
-		@isArray(subscribers) && @subscribe(subscriber) for subscriber in subscribers
-		@isArray(previous) && @push(previous)
+		GapUtil.isCommandArray(subscribers) && @subscribe(subscriber) for subscriber in subscribers
+		GapUtil.isCommandArray(previous) && @push(previous)
 
-	isArray: (args) -> args? && {}.toString.call(args) is '[object Array]' && args.length > 0
-
-	publish: (commandArray) -> 
-		subscriber.listen(commandArray, this) for subscriber in @subscribers
+	publish: (commandArray) -> subscriber.listen(commandArray, this) for subscriber in @subscribers
 
 	push: (commandArray) ->
-		if @isArray(commandArray) && @isArray(commandArray[0]) then @push(i) for i in commandArray
-		else if	@isArray(commandArray)
+		if GapUtil.isCommandArray(commandArray) && GapUtil.isCommandArray(commandArray[0])
+			@push(i) for i in commandArray
+		else if	GapUtil.isCommandArray(commandArray)
 			if commandArray[0].indexOf('_gap') is 0 then @publish(commandArray)
 			else
 				root._gaq.push(commandArray)
@@ -37,13 +40,21 @@ class GapBounceTracker
 
 class GapReadTracker
 	listen: (commandArray, gap) ->
-		if commandArray.length is 3 && commandArray[0] is '_gapTrackReads' && typeof commandArray[1] is 'number' && typeof commandArray[2] is 'number'
+		if commandArray.length is 3 &&
+		commandArray[0] is '_gapTrackReads' &&
+		typeof commandArray[1] is 'number' &&
+		typeof commandArray[2] is 'number'
+
 			gap.variables['gapReadTrackerSeconds'] = 0
 			gap.variables['gapReadTrackerSecondsMax'] = commandArray[1] * commandArray[2]
 			gap.variables['gapReadTrackerInterval'] = root.setInterval(
 				fn = () ->
 					if root._gap.variables['gapReadTrackerSeconds'] < root._gap.variables['gapReadTrackerSecondsMax']
-						root._gap.push(['_trackEvent', 'gapRead', (root._gap.variables['gapReadTrackerSeconds'] += commandArray[1]).toString()])
+						root._gap.push([
+							'_trackEvent',
+							'gapRead',
+							(root._gap.variables['gapReadTrackerSeconds'] += commandArray[1]).toString()
+						])
 						fn
 					else clearInterval(root._gap.variables['gapReadTrackerInterval'])
 				, commandArray[1] * 1000
