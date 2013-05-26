@@ -6,11 +6,22 @@ There is no need to include any of the default Google Analytics tracking code, a
 
 ```javascript
 var _gap = _gap || [];
+
+// Standard Google Analytics pushes, just with _gap.push. 
+// You can push anything, just like normal, via _gap.push instead of _gaq.push.
 _gap.push(["_setAccount", "UA-XXXXXX-X"]); // CHANGE.
 _gap.push(["_trackPageview"]);
-_gap.push(["_gapTrackBounceViaTime", 10]);
-//_gap.push(["_gapTrackBounceViaScroll", 50]); Track bounces via time or scrolling depth.
-_gap.push(["_gapTrackReads", 20, 30]);
+
+// With both bounce trackers active, any user who scrolls down 50%
+// OR stays 10 seconds is not counted as a bounce. You can use just one too.
+_gap.push(["_gapTrackBounceViaTime", 10]); // Change seconds, if needed.
+_gap.push(["_gapTrackBounceViaScroll", 50]); // Change percentage, if needed.
+
+// Every 20 seconds, push a read event so that time on site is more accurate.
+// Only allow 30 of these read events per page.
+_gap.push(["_gapTrackReads", 20, 30]); // Change cadence and max read events per page, if needed.
+
+// Anytime a user clicks a link, internal or external, push the event.
 _gap.push(["_gapTrackLinkClicks"]);
 
 (function() {
