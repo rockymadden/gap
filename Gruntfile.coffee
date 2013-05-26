@@ -5,7 +5,9 @@ module.exports = (grunt) ->
 			release: 
 				files: 'gap.js': 'src/gap.coffee'
 			tests: 
-				files: 'test/gap.test.js': 'test/gap.test.coffee'
+				files: 
+					'test/gap.test.js': 'test/gap.test.coffee',
+					'test/gaptimetracker.test.js': 'test/gaptimetracker.test.coffee'
 		uglify:
 			release:
 				files: 'gap.min.js': 'gap.js'
