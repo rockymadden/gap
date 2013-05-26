@@ -4,10 +4,6 @@
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
 
   Gap = (function() {
-    Gap.prototype.bounced = false;
-
-    Gap.prototype.cookied = false;
-
     Gap.prototype.history = [];
 
     Gap.prototype.subscribers = [];
@@ -17,6 +13,7 @@
     function Gap(previous, subscribers, cookied) {
       var subscriber, _i, _len;
 
+      this.bounced = false;
       this.cookied = cookied;
       for (_i = 0, _len = subscribers.length; _i < _len; _i++) {
         subscriber = subscribers[_i];
@@ -77,7 +74,7 @@
       switch (commandArray[0]) {
         case '_gapTrackBounceViaTime':
           if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !gap.cookied && !gap.bounced) {
-            return gap.variables['gapBounceViaTimeTrackerTimeout'] = root.setTimeout((function() {
+            return gap.variables['bounceViaTimeTimeout'] = root.setTimeout((function() {
               if (!root._gap.bounced) {
                 root._gap.bounced = true;
                 return root._gap.push(['_trackEvent', 'gapBounceViaTime', commandArray[1].toString()]);
@@ -87,14 +84,14 @@
           break;
         case '_gapTrackReads':
           if (commandArray.length === 3 && typeof commandArray[1] === 'number' && typeof commandArray[2] === 'number') {
-            gap.variables['gapReadTrackerSeconds'] = 0;
-            gap.variables['gapReadTrackerSecondsMax'] = commandArray[1] * commandArray[2];
-            return gap.variables['gapReadTrackerInterval'] = root.setInterval(fn = (function() {
-              if (root._gap.variables['gapReadTrackerSeconds'] < root._gap.variables['gapReadTrackerSecondsMax']) {
-                root._gap.push(['_trackEvent', 'gapRead', (root._gap.variables['gapReadTrackerSeconds'] += commandArray[1]).toString()]);
+            gap.variables['readsSeconds'] = 0;
+            gap.variables['readsSecondsMax'] = commandArray[1] * commandArray[2];
+            return gap.variables['readsInterval'] = root.setInterval(fn = (function() {
+              if (root._gap.variables['readsSeconds'] < root._gap.variables['readsSecondsMax']) {
+                root._gap.push(['_trackEvent', 'gapRead', (root._gap.variables['readsSeconds'] += commandArray[1]).toString()]);
                 return fn;
               } else {
-                return clearInterval(root._gap.variables['gapReadTrackerInterval']);
+                return clearInterval(root._gap.variables['readsInterval']);
               }
             }), commandArray[1] * 1000);
           }
@@ -163,11 +160,11 @@
       switch (commandArray[0]) {
         case '_gapTrackBounceViaScroll':
           if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !gap.cookied && !gap.bounced) {
-            gap.variables['gapBounceViaScrollTrackerPercentage'] = commandArray[1];
+            gap.variables['bounceViaScrollPercentage'] = commandArray[1];
             return this.append(function(event) {
-              if (!gap.bounced && ((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 >= root._gap.variables['gapBounceViaScrollTrackerPercentage']) {
+              if (!gap.bounced && ((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 >= root._gap.variables['bounceViaScrollPercentage']) {
                 root._gap.bounced = true;
-                return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables['gapBounceViaScrollTrackerPercentage']]);
+                return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables['bounceViaScrollPercentage']]);
               }
             });
           }
@@ -214,15 +211,15 @@
   }
 
   (function() {
-    var ga, hc, s;
+    var ga, hasGaSessionCookie, s;
 
-    hc = GapUtil.hasCookie("__utmb");
+    hasGaSessionCookie = GapUtil.hasCookie("__utmb");
     ga = root.document.createElement('script');
     ga.async = true;
     ga.type = 'text/javascript';
     ga.src = root.location.protocol === 'https:' ? 'https://ssl' : 'http://www' + '.google-analytics.com/ga.js';
     ga.onload = ga.onreadystatechange = function() {
-      return root._gap = new Gap(root._gap, [new GapTimeTracker(), new GapMousedownTracker(), new GapScrollTracker()], hc);
+      return root._gap = new Gap(root._gap, [new GapTimeTracker(), new GapMousedownTracker(), new GapScrollTracker()], hasGaSessionCookie);
     };
     s = root.document.getElementsByTagName('script')[0];
     return s.parentNode.insertBefore(ga, s);

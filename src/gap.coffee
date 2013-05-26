@@ -1,13 +1,12 @@
 root = exports ? this
 
 class Gap
-	bounced: false
-	cookied: false
 	history: []
 	subscribers: []
 	variables: {}
 
 	constructor: (previous, subscribers, cookied) ->
+		@bounced = false
 		@cookied = cookied
 		GapUtil.isCommandArray(subscribers) && @subscribe(subscriber) for subscriber in subscribers
 		GapUtil.isCommandArray(previous) && @push(previous)
@@ -39,7 +38,7 @@ class GapTimeTracker
 				not gap.cookied &&
 				not gap.bounced
 
-					gap.variables['gapBounceViaTimeTrackerTimeout'] = root.setTimeout(
+					gap.variables['bounceViaTimeTimeout'] = root.setTimeout(
 						(() -> 
 							if not root._gap.bounced
 								root._gap.bounced = true
@@ -56,18 +55,18 @@ class GapTimeTracker
 				typeof commandArray[1] is 'number' &&
 				typeof commandArray[2] is 'number'
 
-					gap.variables['gapReadTrackerSeconds'] = 0
-					gap.variables['gapReadTrackerSecondsMax'] = commandArray[1] * commandArray[2]
-					gap.variables['gapReadTrackerInterval'] = root.setInterval(
+					gap.variables['readsSeconds'] = 0
+					gap.variables['readsSecondsMax'] = commandArray[1] * commandArray[2]
+					gap.variables['readsInterval'] = root.setInterval(
 						fn = (() ->
-							if root._gap.variables['gapReadTrackerSeconds'] < root._gap.variables['gapReadTrackerSecondsMax']
+							if root._gap.variables['readsSeconds'] < root._gap.variables['readsSecondsMax']
 								root._gap.push([
 									'_trackEvent',
 									'gapRead',
-									(root._gap.variables['gapReadTrackerSeconds'] += commandArray[1]).toString()
+									(root._gap.variables['readsSeconds'] += commandArray[1]).toString()
 								])
 								fn
-							else clearInterval(root._gap.variables['gapReadTrackerInterval'])
+							else clearInterval(root._gap.variables['readsInterval'])
 						),
 						commandArray[1] * 1000
 					)
@@ -121,17 +120,17 @@ class GapScrollTracker
 				not gap.cookied &&
 				not gap.bounced
 
-					gap.variables['gapBounceViaScrollTrackerPercentage'] = commandArray[1]
+					gap.variables['bounceViaScrollPercentage'] = commandArray[1]
 					@append((event) ->
 						if not gap.bounced &&
 						((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 \
-						>= root._gap.variables['gapBounceViaScrollTrackerPercentage']
+						>= root._gap.variables['bounceViaScrollPercentage']
 
 							root._gap.bounced = true
 							root._gap.push([
 								'_trackEvent',
 								'gapBounceViaScroll',
-								root._gap.variables['gapBounceViaScrollTrackerPercentage']
+								root._gap.variables['bounceViaScrollPercentage']
 							])
 					)
 
@@ -157,24 +156,21 @@ class GapUtil
 
 	@windowScroll: () -> root.window.pageYOffset || root.document.body.scrollTop || root.document.documentElement.scrollTop || 0
 
-
 unless root._gap? then root._gap = []
 unless root._gaq? then root._gaq = []
 
 (() ->
-	hc = GapUtil.hasCookie("__utmb")
+	hasGaSessionCookie = GapUtil.hasCookie("__utmb")
+
 	ga = root.document.createElement 'script'
 	ga.async = true
 	ga.type = 'text/javascript'
 	ga.src = if root.location.protocol is 'https:' then 'https://ssl' else 'http://www' + '.google-analytics.com/ga.js'
 	ga.onload = ga.onreadystatechange = () -> 
-		root._gap = new Gap(root._gap,
-			[
-				new GapTimeTracker(),
-				new GapMousedownTracker(),
-				new GapScrollTracker(),
-			],
-			hc
+		root._gap = new Gap(
+			root._gap,
+			[new GapTimeTracker(), new GapMousedownTracker(), new GapScrollTracker()],
+			hasGaSessionCookie
 		)
 
 	s = root.document.getElementsByTagName('script')[0]
