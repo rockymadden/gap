@@ -145,11 +145,11 @@
     GapScrollTracker.prototype.append = function(f) {
       var os;
 
-      os = window.onscroll;
+      os = root.onscroll;
       if (os == null) {
-        return window.onscroll = f;
+        return root.onscroll = f;
       } else {
-        return window.onscroll = function(event) {
+        return root.onscroll = function(event) {
           os(event);
           return f(event);
         };
@@ -191,11 +191,11 @@
     };
 
     GapUtil.windowHeight = function() {
-      return root.window.innerHeight || root.document.documentElement.clientHeight || root.document.body.clientHeight || 0;
+      return root.innerHeight || root.document.documentElement.clientHeight || root.document.body.clientHeight || 0;
     };
 
     GapUtil.windowScroll = function() {
-      return root.window.pageYOffset || root.document.body.scrollTop || root.document.documentElement.scrollTop || 0;
+      return root.pageYOffset || root.document.body.scrollTop || root.document.documentElement.scrollTop || 0;
     };
 
     return GapUtil;

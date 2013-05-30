@@ -105,10 +105,10 @@ class GapScrollTracker
 
 	# Old school for most browser support.
 	append: (f) ->
-		os = window.onscroll
+		os = root.onscroll
 
-		if not os? then window.onscroll = f
-		else window.onscroll = (event) ->
+		if not os? then root.onscroll = f
+		else root.onscroll = (event) ->
 			os(event)
 			f(event)
 
@@ -151,10 +151,10 @@ class GapUtil
 	@hasCookie: (name) -> root.document.cookie.indexOf(name) >= 0
 
 	@windowHeight: () -> 
-		root.window.innerHeight || root.document.documentElement.clientHeight ||
+		root.innerHeight || root.document.documentElement.clientHeight ||
 		root.document.body.clientHeight || 0
 
-	@windowScroll: () -> root.window.pageYOffset || root.document.body.scrollTop ||
+	@windowScroll: () -> root.pageYOffset || root.document.body.scrollTop ||
 		root.document.documentElement.scrollTop || 0
 
 unless root._gap? then root._gap = []
