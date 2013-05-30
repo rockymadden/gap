@@ -154,7 +154,8 @@ class GapUtil
 		root.window.innerHeight || root.document.documentElement.clientHeight ||
 		root.document.body.clientHeight || 0
 
-	@windowScroll: () -> root.window.pageYOffset || root.document.body.scrollTop || root.document.documentElement.scrollTop || 0
+	@windowScroll: () -> root.window.pageYOffset || root.document.body.scrollTop ||
+		root.document.documentElement.scrollTop || 0
 
 unless root._gap? then root._gap = []
 unless root._gaq? then root._gaq = []
