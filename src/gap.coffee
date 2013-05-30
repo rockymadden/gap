@@ -1,4 +1,4 @@
-root = exports ? this
+root = exports ? window
 
 class Gap
 	history: []
