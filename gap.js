@@ -1,7 +1,7 @@
 (function() {
   var Gap, GapMousedownTracker, GapScrollTracker, GapTimeTracker, GapUtil, root;
 
-  root = typeof exports !== "undefined" && exports !== null ? exports : this;
+  root = window;
 
   Gap = (function() {
     Gap.prototype.history = [];
