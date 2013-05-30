@@ -1,6 +1,6 @@
 {
 	"name": "gap",
-	"version": "0.4.3",
+	"version": "0.4.4",
 	"devDependencies": {
 		"grunt": "~0.4.1",
 		"grunt-contrib-coffee": "~0.7.0",
