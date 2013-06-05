@@ -28,7 +28,7 @@ class Gap
 	subscribe: (subscriber) -> @subscribers.push(subscriber)
 
 class GapTimeTracker
-	constructor: () ->
+	constructor: ->
 
 	listen: (commandArray, gap) ->
 		switch commandArray[0]
@@ -39,7 +39,7 @@ class GapTimeTracker
 				not gap.bounced
 
 					gap.variables['bounceViaTimeTimeout'] = root.setTimeout(
-						(() -> 
+						(-> 
 							if not root._gap.bounced
 								root._gap.bounced = true
 								root._gap.push([
@@ -58,7 +58,7 @@ class GapTimeTracker
 					gap.variables['readsSeconds'] = 0
 					gap.variables['readsSecondsMax'] = commandArray[1] * commandArray[2]
 					gap.variables['readsInterval'] = root.setInterval(
-						fn = (() ->
+						fn = (->
 							if root._gap.variables['readsSeconds'] < root._gap.variables['readsSecondsMax']
 								root._gap.push([
 									'_trackEvent',
@@ -72,7 +72,7 @@ class GapTimeTracker
 					)
 
 class GapMousedownTracker
-	constructor: () ->
+	constructor: ->
 
 	# Old school for most browser support.
 	append: (f) ->
@@ -101,7 +101,7 @@ class GapMousedownTracker
 				)
 
 class GapScrollTracker
-	constructor: () ->
+	constructor: ->
 
 	# Old school for most browser support.
 	append: (f) ->
@@ -135,9 +135,9 @@ class GapScrollTracker
 					)
 
 class GapUtil
-	constructor: () ->
+	constructor: ->
 
-	@documentHeight: () -> Math.max(
+	@documentHeight: -> Math.max(
 		root.document.body.scrollHeight || 0,
 		root.document.documentElement.scrollHeight || 0,
 		root.document.body.offsetHeight || 0,
@@ -150,24 +150,24 @@ class GapUtil
 
 	@hasCookie: (name) -> root.document.cookie.indexOf(name) >= 0
 
-	@windowHeight: () -> 
+	@windowHeight: -> 
 		root.innerHeight || root.document.documentElement.clientHeight ||
 		root.document.body.clientHeight || 0
 
-	@windowScroll: () -> root.pageYOffset || root.document.body.scrollTop ||
+	@windowScroll: -> root.pageYOffset || root.document.body.scrollTop ||
 		root.document.documentElement.scrollTop || 0
 
 unless root._gap? then root._gap = []
 unless root._gaq? then root._gaq = []
 
-(() ->
+(->
 	hasGaSessionCookie = GapUtil.hasCookie("__utmb")
 
 	ga = root.document.createElement 'script'
 	ga.async = true
 	ga.type = 'text/javascript'
 	ga.src = if root.location.protocol is 'https:' then 'https://ssl' else 'http://www' + '.google-analytics.com/ga.js'
-	ga.onload = ga.onreadystatechange = () -> 
+	ga.onload = ga.onreadystatechange = -> 
 		root._gap = new Gap(
 			root._gap,
 			[new GapTimeTracker(), new GapMousedownTracker(), new GapScrollTracker()],
