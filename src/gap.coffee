@@ -28,8 +28,6 @@ class Gap
 	subscribe: (subscriber) -> @subscribers.push(subscriber)
 
 class GapTimeTracker
-	constructor: ->
-
 	listen: (commandArray, gap) ->
 		switch commandArray[0]
 			when '_gapTrackBounceViaTime'
@@ -72,8 +70,6 @@ class GapTimeTracker
 					)
 
 class GapMousedownTracker
-	constructor: ->
-
 	# Old school for most browser support.
 	append: (f) ->
 		omd = root.document.getElementsByTagName('body')[0].onmousedown
@@ -101,8 +97,6 @@ class GapMousedownTracker
 				)
 
 class GapScrollTracker
-	constructor: ->
-
 	# Old school for most browser support.
 	append: (f) ->
 		os = root.onscroll
@@ -135,8 +129,6 @@ class GapScrollTracker
 					)
 
 class GapUtil
-	constructor: ->
-
 	@documentHeight: -> Math.max(
 		root.document.body.scrollHeight || 0,
 		root.document.documentElement.scrollHeight || 0,
