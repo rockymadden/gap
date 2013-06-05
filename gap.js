@@ -182,12 +182,12 @@
       return Math.max(root.document.body.scrollHeight || 0, root.document.documentElement.scrollHeight || 0, root.document.body.offsetHeight || 0, root.document.documentElement.offsetHeight || 0, root.document.body.clientHeight || 0, root.document.documentElement.clientHeight || 0);
     };
 
-    GapUtil.isCommandArray = function(args) {
-      return (args != null) && {}.toString.call(args) === '[object Array]' && args.length > 0;
-    };
-
     GapUtil.hasCookie = function(name) {
       return root.document.cookie.indexOf(name) >= 0;
+    };
+
+    GapUtil.isCommandArray = function(args) {
+      return (args != null) && {}.toString.call(args) === '[object Array]' && args.length > 0;
     };
 
     GapUtil.windowHeight = function() {

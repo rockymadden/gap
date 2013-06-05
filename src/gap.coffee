@@ -146,16 +146,14 @@ class GapUtil
 		root.document.documentElement.clientHeight || 0
 	)
 
-	@isCommandArray: (args) -> args? && {}.toString.call(args) is '[object Array]' && args.length > 0
-
 	@hasCookie: (name) -> root.document.cookie.indexOf(name) >= 0
 
-	@windowHeight: -> 
-		root.innerHeight || root.document.documentElement.clientHeight ||
+	@isCommandArray: (args) -> args? && {}.toString.call(args) is '[object Array]' && args.length > 0
+
+	@windowHeight: -> root.innerHeight || root.document.documentElement.clientHeight ||
 		root.document.body.clientHeight || 0
 
-	@windowScroll: -> root.pageYOffset || root.document.body.scrollTop ||
-		root.document.documentElement.scrollTop || 0
+	@windowScroll: -> root.pageYOffset || root.document.body.scrollTop || root.document.documentElement.scrollTop || 0
 
 unless root._gap? then root._gap = []
 unless root._gaq? then root._gaq = []
