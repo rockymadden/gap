@@ -5,12 +5,12 @@ module.exports = (grunt) ->
 			release:
 				options: join: true
 				files: 'gap.js': [
-					'src/util.coffee',
-					'src/tracker/mousedown.coffee',
-					'src/tracker/scroll.coffee',
-					'src/tracker/time.coffee',
-					'src/gap.coffee',
-					'src/core.coffee'
+					'source/util.coffee',
+					'source/tracker/mousedown.coffee',
+					'source/tracker/scroll.coffee',
+					'source/tracker/time.coffee',
+					'source/gap.coffee',
+					'source/core.coffee'
 				]
 			tests: files:
 				'test/core.test.js': 'test/core.test.coffee',
