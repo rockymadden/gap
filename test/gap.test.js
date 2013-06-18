@@ -5,16 +5,6 @@
 
   listener = null;
 
-  module('globals');
-
-  test('_gap should be available', 1, function() {
-    return ok(root._gap != null);
-  });
-
-  test('_gaq should be available', 1, function() {
-    return ok(root._gaq != null);
-  });
-
   module('Gap', {
     setup: function() {
       var Litsener;
@@ -42,6 +32,15 @@
   test('cookied property should be available and false', 2, function() {
     ok(root._gap.cookied != null);
     return equal(root._gap.cookied, false);
+  });
+
+  test('debugged property should be available and true', 2, function() {
+    ok(root._gap.debugged != null);
+    return equal(root._gap.debugged, true);
+  });
+
+  test('gaq property should be available', 1, function() {
+    return ok(root._gap.gaq != null);
   });
 
   test('history property should be available', 1, function() {

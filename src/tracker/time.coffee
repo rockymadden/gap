@@ -1,14 +1,16 @@
 class GapTimeTracker
-	listen: (commandArray, gap) ->
+	constructor: (gap) -> @gap = gap
+
+	listen: (commandArray) ->
 		switch commandArray[0]
 			when '_gapTrackBounceViaTime'
 				if commandArray.length is 2 and
 				typeof commandArray[1] is 'number' and
-				not gap.cookied and
-				not gap.bounced
-
-					gap.variables['bounceViaTimeTimeout'] = root.setTimeout(
-						(-> 
+				not @gap.cookied and
+				not @gap.bounced
+					
+					@gap.variables['bounceViaTimeTimeout'] = root.setTimeout(
+						(->
 							if not root._gap.bounced
 								root._gap.bounced = true
 								root._gap.push([
@@ -24,9 +26,9 @@ class GapTimeTracker
 				typeof commandArray[1] is 'number' and
 				typeof commandArray[2] is 'number'
 
-					gap.variables['readsSeconds'] = 0
-					gap.variables['readsSecondsMax'] = commandArray[1] * commandArray[2]
-					gap.variables['readsInterval'] = root.setInterval(
+					@gap.variables['readsSeconds'] = 0
+					@gap.variables['readsSecondsMax'] = commandArray[1] * commandArray[2]
+					@gap.variables['readsInterval'] = root.setInterval(
 						fn = (->
 							if root._gap.variables['readsSeconds'] < root._gap.variables['readsSecondsMax']
 								root._gap.push([

@@ -1,4 +1,6 @@
 class GapScrollTracker
+	constructor: (gap) -> @gap = gap
+
 	append: (fn) ->
 		os = root.onscroll
 
@@ -7,17 +9,17 @@ class GapScrollTracker
 			os(event)
 			fn(event)
 
-	listen: (commandArray, gap) ->
+	listen: (commandArray) ->
 		switch commandArray[0]
 			when '_gapTrackBounceViaScroll'
 				if commandArray.length is 2 and
 				typeof commandArray[1] is 'number' and
-				not gap.cookied and
-				not gap.bounced
+				not @gap.cookied and
+				not @gap.bounced
 
-					gap.variables['bounceViaScrollPercentage'] = commandArray[1]
+					@gap.variables['bounceViaScrollPercentage'] = commandArray[1]
 					@append((event) ->
-						if not gap.bounced and
+						if not root._gap.bounced and
 						((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 \
 						>= root._gap.variables['bounceViaScrollPercentage']
 

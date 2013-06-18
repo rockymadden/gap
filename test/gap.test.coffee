@@ -1,12 +1,6 @@
 root = window
 listener = null
 
-module('globals')
-
-test '_gap should be available', 1, -> ok(root._gap?)
-
-test '_gaq should be available', 1, -> ok(root._gaq?)
-
 module('Gap',
 	setup: -> listener = new (class Litsener
 		constructor: -> @listened = false
@@ -21,6 +15,12 @@ test 'bounced property should be available and false', 2, ->
 test 'cookied property should be available and false', 2, ->
 	ok(root._gap.cookied?)
 	equal(root._gap.cookied, false)
+
+test 'debugged property should be available and true', 2, ->
+	ok(root._gap.debugged?)
+	equal(root._gap.debugged, true)
+
+test 'gaq property should be available', 1, -> ok(root._gap.gaq?)
 
 test 'history property should be available', 1, -> ok(root._gap.history?)
 

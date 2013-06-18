@@ -13,7 +13,7 @@ unless root._gaq? then root._gaq = []
 	ga.onload = ga.onreadystatechange = ->
 		root._gap = new Gap(
 			root._gap,
-			[new GapTimeTracker(), new GapMousedownTracker(), new GapScrollTracker()],
+			root._gaq,
 			false,
 			hasGaSessionCookie,
 			(root._gapDebug? and root._gapDebug)

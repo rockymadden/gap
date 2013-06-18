@@ -1,9 +1,11 @@
+root = window
+
 test '_gapTrackBounceViaTime should push a gapBounceViaTime event', ->
 	stop()
 
 	setTimeout(
 		(->
-			reads = (i for i in _gap.history when i.length > 1 and i[1] is 'gapBounceViaTime')
+			reads = (i for i in root._gap.history when i.length > 1 and i[1] is 'gapBounceViaTime')
 			ok reads.length == 1
 			start()
 		),
@@ -15,7 +17,7 @@ test '_gapTrackReads should push gapRead events', ->
 
 	setTimeout(
 		(->
-			reads = (i for i in _gap.history when i.length > 1 and i[1] is 'gapRead')
+			reads = (i for i in root._gap.history when i.length > 1 and i[1] is 'gapRead')
 			ok reads.length >= 2
 			start()
 		),

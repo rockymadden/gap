@@ -13,10 +13,13 @@ module.exports = (grunt) ->
 					'src/core.coffee'
 				]
 			tests: files:
+				'test/core.test.js': 'test/core.test.coffee',
 				'test/gap.test.js': 'test/gap.test.coffee',
-				'test/gaptimetracker.test.js': 'test/gaptimetracker.test.coffee'
+				'test/tracker/mousedown.test.js': 'test/tracker/mousedown.test.coffee',
+				'test/tracker/scroll.test.js': 'test/tracker/scroll.test.coffee',
+				'test/tracker/time.test.js': 'test/tracker/time.test.coffee'
 		uglify: release: files: 'gap.min.js': 'gap.js'
-		qunit: all: ['test/*.html']
+		qunit: all: ['test/*.html', 'test/tracker/*.html']
 
 	grunt.loadNpmTasks('grunt-contrib-coffee')
 	grunt.loadNpmTasks('grunt-contrib-uglify')

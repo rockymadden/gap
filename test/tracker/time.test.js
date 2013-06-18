@@ -1,4 +1,8 @@
 (function() {
+  var root;
+
+  root = window;
+
   test('_gapTrackBounceViaTime should push a gapBounceViaTime event', function() {
     stop();
     return setTimeout((function() {
@@ -7,7 +11,7 @@
       reads = (function() {
         var _i, _len, _ref, _results;
 
-        _ref = _gap.history;
+        _ref = root._gap.history;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           i = _ref[_i];
@@ -30,7 +34,7 @@
       reads = (function() {
         var _i, _len, _ref, _results;
 
-        _ref = _gap.history;
+        _ref = root._gap.history;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           i = _ref[_i];

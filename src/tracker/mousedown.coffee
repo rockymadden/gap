@@ -1,4 +1,6 @@
 class GapMousedownTracker
+	constructor: (gap) -> @gap = gap
+
 	append: (fn) ->
 		omd = root.document.getElementsByTagName('body')[0].onmousedown
 
@@ -7,7 +9,7 @@ class GapMousedownTracker
 			omd(event)
 			fn(event)
 
-	listen: (commandArray, gap) ->
+	listen: (commandArray) ->
 		switch commandArray[0]
 			when '_gapTrackLinkClicks'
 				@append((event) ->

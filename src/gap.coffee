@@ -1,14 +1,17 @@
 class Gap
-	constructor: (previous, subscribers, bounced, cookied, debug) ->
+	constructor: (gap, gaq, bounced, cookied, debugged) ->
 		@bounced = bounced
 		@cookied = cookied
-		@debug = debug
+		@debugged = debugged
+		@gaq = gaq
 		@history = []
 		@subscribers = []
 		@variables = {}
+		@subscribe(new GapTimeTracker(@))
+		@subscribe(new GapMousedownTracker(@))
+		@subscribe(new GapScrollTracker(@))
 
-		GapUtil.isCommandArray(subscribers) and @subscribe(subscriber) for subscriber in subscribers
-		GapUtil.isCommandArray(previous) and @push(previous)
+		if GapUtil.isCommandArray(gap)? then @push(gap)
 
 	debug: (commandArray) ->
 		@history.push(commandArray)
@@ -16,7 +19,7 @@ class Gap
 		if root.console? then root.console.log('Pushed: ' + commandArray.toString())
 		else root.alert('Pushed: ' + commandArray.toString())
 
-	publish: (commandArray) -> subscriber.listen(commandArray, this) for subscriber in @subscribers
+	publish: (commandArray) -> subscriber.listen(commandArray) for subscriber in @subscribers
 
 	push: (commandArray) ->
 		if GapUtil.isCommandArray(commandArray)
@@ -24,8 +27,8 @@ class Gap
 			else
 				if commandArray[0].indexOf('_gap') is 0 then @publish(commandArray)
 				else
-					root._gaq.push(commandArray)
-					if debug? then @debug(commandArray)
+					@gaq.push(commandArray)
+					if @debugged? then @debug(commandArray)
 
 	subscribe: (subscriber) -> @subscribers.push(subscriber)
 
