@@ -1,67 +1,103 @@
 (function() {
   var Gap, GapMousedownTracker, GapScrollTracker, GapTimeTracker, GapUtil, root;
 
-  root = window;
+  GapUtil = (function() {
+    function GapUtil() {}
 
-  Gap = (function() {
-    Gap.prototype.history = [];
-
-    Gap.prototype.subscribers = [];
-
-    Gap.prototype.variables = {};
-
-    function Gap(previous, subscribers, cookied) {
-      var subscriber, _i, _len;
-
-      this.bounced = false;
-      this.cookied = cookied;
-      for (_i = 0, _len = subscribers.length; _i < _len; _i++) {
-        subscriber = subscribers[_i];
-        GapUtil.isCommandArray(subscribers) && this.subscribe(subscriber);
-      }
-      GapUtil.isCommandArray(previous) && this.push(previous);
-    }
-
-    Gap.prototype.publish = function(commandArray) {
-      var subscriber, _i, _len, _ref, _results;
-
-      _ref = this.subscribers;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        subscriber = _ref[_i];
-        _results.push(subscriber.listen(commandArray, this));
-      }
-      return _results;
+    GapUtil.documentHeight = function() {
+      return Math.max(root.document.body.scrollHeight || 0, root.document.documentElement.scrollHeight || 0, root.document.body.offsetHeight || 0, root.document.documentElement.offsetHeight || 0, root.document.body.clientHeight || 0, root.document.documentElement.clientHeight || 0);
     };
 
-    Gap.prototype.push = function(commandArray) {
-      var i, _i, _len, _results;
+    GapUtil.hasCookie = function(name) {
+      return root.document.cookie.indexOf(name) >= 0;
+    };
 
-      if (GapUtil.isCommandArray(commandArray) && GapUtil.isCommandArray(commandArray[0])) {
-        _results = [];
-        for (_i = 0, _len = commandArray.length; _i < _len; _i++) {
-          i = commandArray[_i];
-          _results.push(this.push(i));
-        }
-        return _results;
-      } else if (GapUtil.isCommandArray(commandArray)) {
-        if (commandArray[0].indexOf('_gap') === 0) {
-          return this.publish(commandArray);
-        } else {
-          root._gaq.push(commandArray);
-          if ((root._gapDebug != null) && root._gapDebug && (root.console != null)) {
-            this.history.push(commandArray);
-            return root.console.log('Pushed: ' + commandArray);
+    GapUtil.isCommandArray = function(potential) {
+      return (potential != null) && {}.toString.call(potential) === '[object Array]' && potential.length > 0;
+    };
+
+    GapUtil.windowHeight = function() {
+      return root.innerHeight || root.document.documentElement.clientHeight || root.document.body.clientHeight || 0;
+    };
+
+    GapUtil.windowScroll = function() {
+      return root.pageYOffset || root.document.body.scrollTop || root.document.documentElement.scrollTop || 0;
+    };
+
+    return GapUtil;
+
+  })();
+
+  GapMousedownTracker = (function() {
+    function GapMousedownTracker() {}
+
+    GapMousedownTracker.prototype.append = function(fn) {
+      var omd;
+
+      omd = root.document.getElementsByTagName('body')[0].onmousedown;
+      if (omd == null) {
+        return root.document.getElementsByTagName('body')[0].onmousedown = fn;
+      } else {
+        return root.document.getElementsByTagName('body')[0].onmousedown = function(event) {
+          omd(event);
+          return fn(event);
+        };
+      }
+    };
+
+    GapMousedownTracker.prototype.listen = function(commandArray, gap) {
+      switch (commandArray[0]) {
+        case '_gapTrackLinkClicks':
+          return this.append(function(event) {
+            var href, target, text;
+
+            target = event.target || event.srcElement;
+            if ((target != null) && (target.nodeName === 'A' || target.nodeName === 'BUTTON')) {
+              text = target.innerText || target.textContent;
+              href = target.href || '';
+              return root._gap.push(['_trackEvent', 'gapLinkClick', text.replace(/^\s+|\s+$/g, '') + ' (' + href + ')']);
+            }
+          });
+      }
+    };
+
+    return GapMousedownTracker;
+
+  })();
+
+  GapScrollTracker = (function() {
+    function GapScrollTracker() {}
+
+    GapScrollTracker.prototype.append = function(fn) {
+      var os;
+
+      os = root.onscroll;
+      if (os == null) {
+        return root.onscroll = fn;
+      } else {
+        return root.onscroll = function(event) {
+          os(event);
+          return fn(event);
+        };
+      }
+    };
+
+    GapScrollTracker.prototype.listen = function(commandArray, gap) {
+      switch (commandArray[0]) {
+        case '_gapTrackBounceViaScroll':
+          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !gap.cookied && !gap.bounced) {
+            gap.variables['bounceViaScrollPercentage'] = commandArray[1];
+            return this.append(function(event) {
+              if (!gap.bounced && ((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 >= root._gap.variables['bounceViaScrollPercentage']) {
+                root._gap.bounced = true;
+                return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables['bounceViaScrollPercentage']]);
+              }
+            });
           }
-        }
       }
     };
 
-    Gap.prototype.subscribe = function(subscriber) {
-      return this.subscribers.push(subscriber);
-    };
-
-    return Gap;
+    return GapScrollTracker;
 
   })();
 
@@ -102,105 +138,77 @@
 
   })();
 
-  GapMousedownTracker = (function() {
-    function GapMousedownTracker() {}
+  Gap = (function() {
+    function Gap(previous, subscribers, bounced, cookied, debug) {
+      var subscriber, _i, _len;
 
-    GapMousedownTracker.prototype.append = function(f) {
-      var omd;
+      this.bounced = bounced;
+      this.cookied = cookied;
+      this.debug = debug;
+      this.history = [];
+      this.subscribers = [];
+      this.variables = {};
+      for (_i = 0, _len = subscribers.length; _i < _len; _i++) {
+        subscriber = subscribers[_i];
+        GapUtil.isCommandArray(subscribers) && this.subscribe(subscriber);
+      }
+      GapUtil.isCommandArray(previous) && this.push(previous);
+    }
 
-      omd = root.document.getElementsByTagName('body')[0].onmousedown;
-      if (omd == null) {
-        return root.document.getElementsByTagName('body')[0].onmousedown = f;
+    Gap.prototype.debug = function(commandArray) {
+      this.history.push(commandArray);
+      if (root.console != null) {
+        return root.console.log('Pushed: ' + commandArray.toString());
       } else {
-        return root.document.getElementsByTagName('body')[0].onmousedown = function(event) {
-          omd(event);
-          return f(event);
-        };
+        return root.alert('Pushed: ' + commandArray.toString());
       }
     };
 
-    GapMousedownTracker.prototype.listen = function(commandArray, gap) {
-      switch (commandArray[0]) {
-        case '_gapTrackLinkClicks':
-          return this.append(function(event) {
-            var href, target, text;
+    Gap.prototype.publish = function(commandArray) {
+      var subscriber, _i, _len, _ref, _results;
 
-            target = event.target || event.srcElement;
-            if ((target != null) && (target.nodeName === 'A' || target.nodeName === 'BUTTON')) {
-              text = target.innerText || target.textContent;
-              href = target.href || '';
-              return root._gap.push(['_trackEvent', 'gapLinkClick', text.replace(/^\s+|\s+$/g, '') + ' (' + href + ')']);
-            }
-          });
+      _ref = this.subscribers;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        subscriber = _ref[_i];
+        _results.push(subscriber.listen(commandArray, this));
       }
+      return _results;
     };
 
-    return GapMousedownTracker;
+    Gap.prototype.push = function(commandArray) {
+      var i, _i, _len, _results;
 
-  })();
-
-  GapScrollTracker = (function() {
-    function GapScrollTracker() {}
-
-    GapScrollTracker.prototype.append = function(f) {
-      var os;
-
-      os = root.onscroll;
-      if (os == null) {
-        return root.onscroll = f;
-      } else {
-        return root.onscroll = function(event) {
-          os(event);
-          return f(event);
-        };
-      }
-    };
-
-    GapScrollTracker.prototype.listen = function(commandArray, gap) {
-      switch (commandArray[0]) {
-        case '_gapTrackBounceViaScroll':
-          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !gap.cookied && !gap.bounced) {
-            gap.variables['bounceViaScrollPercentage'] = commandArray[1];
-            return this.append(function(event) {
-              if (!gap.bounced && ((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 >= root._gap.variables['bounceViaScrollPercentage']) {
-                root._gap.bounced = true;
-                return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables['bounceViaScrollPercentage']]);
-              }
-            });
+      if (GapUtil.isCommandArray(commandArray)) {
+        if (GapUtil.isCommandArray(commandArray[0])) {
+          _results = [];
+          for (_i = 0, _len = commandArray.length; _i < _len; _i++) {
+            i = commandArray[_i];
+            _results.push(this.push(i));
           }
+          return _results;
+        } else {
+          if (commandArray[0].indexOf('_gap') === 0) {
+            return this.publish(commandArray);
+          } else {
+            root._gaq.push(commandArray);
+            if (typeof debug !== "undefined" && debug !== null) {
+              return this.debug(commandArray);
+            }
+          }
+        }
       }
     };
 
-    return GapScrollTracker;
+    Gap.prototype.subscribe = function(subscriber) {
+      return this.subscribers.push(subscriber);
+    };
+
+    return Gap;
 
   })();
 
-  GapUtil = (function() {
-    function GapUtil() {}
-
-    GapUtil.documentHeight = function() {
-      return Math.max(root.document.body.scrollHeight || 0, root.document.documentElement.scrollHeight || 0, root.document.body.offsetHeight || 0, root.document.documentElement.offsetHeight || 0, root.document.body.clientHeight || 0, root.document.documentElement.clientHeight || 0);
-    };
-
-    GapUtil.hasCookie = function(name) {
-      return root.document.cookie.indexOf(name) >= 0;
-    };
-
-    GapUtil.isCommandArray = function(args) {
-      return (args != null) && {}.toString.call(args) === '[object Array]' && args.length > 0;
-    };
-
-    GapUtil.windowHeight = function() {
-      return root.innerHeight || root.document.documentElement.clientHeight || root.document.body.clientHeight || 0;
-    };
-
-    GapUtil.windowScroll = function() {
-      return root.pageYOffset || root.document.body.scrollTop || root.document.documentElement.scrollTop || 0;
-    };
-
-    return GapUtil;
-
-  })();
+  root = window;
 
   if (root._gap == null) {
     root._gap = [];
@@ -219,7 +227,7 @@
     ga.type = 'text/javascript';
     ga.src = root.location.protocol === 'https:' ? 'https://ssl' : 'http://www' + '.google-analytics.com/ga.js';
     ga.onload = ga.onreadystatechange = function() {
-      return root._gap = new Gap(root._gap, [new GapTimeTracker(), new GapMousedownTracker(), new GapScrollTracker()], hasGaSessionCookie);
+      return root._gap = new Gap(root._gap, [new GapTimeTracker(), new GapMousedownTracker(), new GapScrollTracker()], false, hasGaSessionCookie, (root._gapDebug != null) && root._gapDebug);
     };
     s = root.document.getElementsByTagName('script')[0];
     return s.parentNode.insertBefore(ga, s);

@@ -1,8 +1,8 @@
-test '_gapTrackBounceViaTime should push a gapBounceViaTime event', () ->
+test '_gapTrackBounceViaTime should push a gapBounceViaTime event', ->
 	stop()
 
 	setTimeout(
-		(() ->
+		(->
 			reads = (i for i in _gap.history when i.length > 1 and i[1] is 'gapBounceViaTime')
 			ok reads.length == 1
 			start()
@@ -10,11 +10,11 @@ test '_gapTrackBounceViaTime should push a gapBounceViaTime event', () ->
 		1250
 	)
 
-test '_gapTrackReads should push gapRead events', () ->
+test '_gapTrackReads should push gapRead events', ->
 	stop()
 
 	setTimeout(
-		(() ->
+		(->
 			reads = (i for i in _gap.history when i.length > 1 and i[1] is 'gapRead')
 			ok reads.length >= 2
 			start()

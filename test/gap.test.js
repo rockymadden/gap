@@ -1,16 +1,18 @@
 (function() {
-  var listener;
+  var listener, root;
+
+  root = window;
 
   listener = null;
 
   module('globals');
 
   test('_gap should be available', 1, function() {
-    return ok(typeof _gap !== "undefined" && _gap !== null);
+    return ok(root._gap != null);
   });
 
   test('_gaq should be available', 1, function() {
-    return ok(typeof _gaq !== "undefined" && _gaq !== null);
+    return ok(root._gaq != null);
   });
 
   module('Gap', {
@@ -33,44 +35,44 @@
   });
 
   test('bounced property should be available and false', 2, function() {
-    ok(_gap.bounced != null);
-    return equal(_gap.bounced, false);
+    ok(root._gap.bounced != null);
+    return equal(root._gap.bounced, false);
   });
 
   test('cookied property should be available and false', 2, function() {
-    ok(_gap.cookied != null);
-    return equal(_gap.cookied, false);
+    ok(root._gap.cookied != null);
+    return equal(root._gap.cookied, false);
   });
 
   test('history property should be available', 1, function() {
-    return ok(_gap.history != null);
+    return ok(root._gap.history != null);
   });
 
   test('subscribers property should be available', 1, function() {
-    return ok(_gap.subscribers != null);
+    return ok(root._gap.subscribers != null);
   });
 
   test('variables property should be available', 1, function() {
-    return ok(_gap.variables != null);
+    return ok(root._gap.variables != null);
   });
 
   test('subscribe method should add subscriber', 2, function() {
-    _gap.subscribers = [];
-    equal(_gap.subscribers.length, 0);
-    _gap.subscribe(listener);
-    return equal(_gap.subscribers.length, 1);
+    root._gap.subscribers = [];
+    equal(root._gap.subscribers.length, 0);
+    root._gap.subscribe(listener);
+    return equal(root._gap.subscribers.length, 1);
   });
 
   test('publish method should send message to subscribers', 2, function() {
-    _gap.subscribers = [];
-    _gap.subscribe(listener);
-    equal(_gap.subscribers[0].listened, false);
-    _gap.publish(['commandArray']);
-    return equal(_gap.subscribers[0].listened, true);
+    root._gap.subscribers = [];
+    root._gap.subscribe(listener);
+    equal(root._gap.subscribers[0].listened, false);
+    root._gap.publish(['commandArray']);
+    return equal(root._gap.subscribers[0].listened, true);
   });
 
   test('push method should not throw', 1, function() {
-    _gap.push('commandArray');
+    root._gap.push('commandArray');
     return ok(true);
   });
 
