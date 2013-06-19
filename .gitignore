@@ -11,6 +11,9 @@
 *#
 .git/
 
+# Build ignores.
+build/
+
 # OS ignores.
 .DS_Store
 

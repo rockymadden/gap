@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8"/>
-		<title>GapMousedownTracker Class - Unit Tests</title>
+		<title>GapScrollTracker Class - Unit Tests</title>
 		<link href="http://code.jquery.com/qunit/qunit-1.11.0.css" rel="stylesheet"/>
 	</head>
 	<body>
@@ -14,10 +14,10 @@
 			var _gap = _gap || [];
 			_gap.push(["_setAccount", "UA-XXXXXXXX-X"]);
 			_gap.push(["_trackPageview"]);
-			_gap.push(["_gapTrackLinkClicks"]);
+			_gap.push(["_gapTrackBounceViaScroll", 1])
 			_gapDebug = 1;
 		</script>
-		<script src="../../gap.js" type="text/javascript"></script>
-		<script src="./mousedown.test.js" type="text/javascript"></script>
+		<script src="../gap.js" type="text/javascript"></script>
+		<script src="./scroll-test.js" type="text/javascript"></script>
 	</body>
 </html>
