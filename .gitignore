@@ -11,19 +11,11 @@
 *#
 .git/
 
-# Build ignores.
-build/
-
 # OS ignores.
 .DS_Store
 
-# Editor ignores.
-*.ids
-*.iml
-*.ipr
-*.iws
-.idea/
-out/
+# Build ignores.
+build/
 
 # Project ignores.
 node_modules/
