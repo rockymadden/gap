@@ -7,6 +7,7 @@ class Gap
 		@history = []
 		@subscribers = []
 		@variables = {}
+
 		@subscribe(new GapTimeTracker(@))
 		@subscribe(new GapMousedownTracker(@))
 		@subscribe(new GapScrollTracker(@))
@@ -21,14 +22,12 @@ class Gap
 
 	publish: (commandArray) -> subscriber.listen(commandArray) for subscriber in @subscribers
 
-	push: (commandArray) ->
-		if GapUtil.isCommandArray(commandArray)
-			if GapUtil.isCommandArray(commandArray[0]) then @push(i) for i in commandArray
-			else
-				if commandArray[0].indexOf('_gap') is 0 then @publish(commandArray)
-				else
-					@gaq.push(commandArray)
-					if @debugged? then @debug(commandArray)
+	push: (commandArray) -> if GapUtil.isCommandArray(commandArray)
+		if GapUtil.isCommandArray(commandArray[0]) then @push(i) for i in commandArray
+		else if commandArray[0].indexOf('_gap') is 0 then @publish(commandArray)
+		else
+			@gaq.push(commandArray)
+			if @debugged? then @debug(commandArray)
 
 	subscribe: (subscriber) -> @subscribers.push(subscriber)
 

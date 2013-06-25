@@ -16,5 +16,6 @@ class GapUtil
 	@windowHeight: ->
 		root.innerHeight or root.document.documentElement.clientHeight or root.document.body.clientHeight or 0
 
-	@windowScroll: -> root.pageYOffset or root.document.body.scrollTop or root.document.documentElement.scrollTop or 0
+	@windowScroll: ->
+		root.pageYOffset or root.document.body.scrollTop or root.document.documentElement.scrollTop or 0
 

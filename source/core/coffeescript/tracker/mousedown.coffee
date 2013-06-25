@@ -9,20 +9,19 @@ class GapMousedownTracker
 			omd(event)
 			fn(event)
 
-	listen: (commandArray) ->
-		switch commandArray[0]
-			when '_gapTrackLinkClicks'
-				@append((event) ->
-					target = event.target or event.srcElement
+	listen: (commandArray) -> switch commandArray[0]
+		when '_gapTrackLinkClicks'
+			@append((event) ->
+				target = event.target or event.srcElement
 
-					if target? and (target.nodeName is 'A' or target.nodeName is 'BUTTON')
-						text = target.innerText or target.textContent
-						href = target.href or ''
+				if target? and (target.nodeName is 'A' or target.nodeName is 'BUTTON')
+					text = target.innerText or target.textContent
+					href = target.href or ''
 
-						root._gap.push([
-							'_trackEvent',
-							'gapLinkClick',
-							text.replace(/^\s+|\s+$/g, '') + ' (' + href + ')'
-						])
-				)
+					root._gap.push([
+						'_trackEvent',
+						'gapLinkClick',
+						text.replace(/^\s+|\s+$/g, '') + ' (' + href + ')'
+					])
+			)
 

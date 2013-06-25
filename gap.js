@@ -193,14 +193,12 @@
             _results.push(this.push(i));
           }
           return _results;
+        } else if (commandArray[0].indexOf('_gap') === 0) {
+          return this.publish(commandArray);
         } else {
-          if (commandArray[0].indexOf('_gap') === 0) {
-            return this.publish(commandArray);
-          } else {
-            this.gaq.push(commandArray);
-            if (this.debugged != null) {
-              return this.debug(commandArray);
-            }
+          this.gaq.push(commandArray);
+          if (this.debugged != null) {
+            return this.debug(commandArray);
           }
         }
       }
