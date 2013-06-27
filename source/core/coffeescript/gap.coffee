@@ -1,8 +1,8 @@
 class Gap
-	constructor: (gap, gaq, bounced, cookied, debugged) ->
+	constructor: (gap, gaq, bounced, cookied, debugging) ->
 		@bounced = bounced
 		@cookied = cookied
-		@debugged = debugged
+		@debugging = debugging
 		@gaq = gaq
 		@history = []
 		@subscribers = []
@@ -27,7 +27,7 @@ class Gap
 		else if commandArray[0].indexOf('_gap') is 0 then @publish(commandArray)
 		else
 			@gaq.push(commandArray)
-			if @debugged? then @debug(commandArray)
+			if @debugging? then @debug(commandArray)
 
 	subscribe: (subscriber) -> @subscribers.push(subscriber)
 

@@ -145,10 +145,10 @@
   })();
 
   Gap = (function() {
-    function Gap(gap, gaq, bounced, cookied, debugged) {
+    function Gap(gap, gaq, bounced, cookied, debugging) {
       this.bounced = bounced;
       this.cookied = cookied;
-      this.debugged = debugged;
+      this.debugging = debugging;
       this.gaq = gaq;
       this.history = [];
       this.subscribers = [];
@@ -197,7 +197,7 @@
           return this.publish(commandArray);
         } else {
           this.gaq.push(commandArray);
-          if (this.debugged != null) {
+          if (this.debugging != null) {
             return this.debug(commandArray);
           }
         }

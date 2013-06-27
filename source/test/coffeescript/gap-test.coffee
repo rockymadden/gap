@@ -16,9 +16,9 @@ test 'cookied property should be available and false', 2, ->
 	ok(root._gap.cookied?)
 	equal(root._gap.cookied, false)
 
-test 'debugged property should be available and true', 2, ->
-	ok(root._gap.debugged?)
-	equal(root._gap.debugged, true)
+test 'debugging property should be available and true', 2, ->
+	ok(root._gap.debugging?)
+	equal(root._gap.debugging, true)
 
 test 'gaq property should be available', 1, -> ok(root._gap.gaq?)
 
