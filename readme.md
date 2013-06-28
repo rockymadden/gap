@@ -107,7 +107,7 @@ _gap.push(['_gapTrackLinkClicks']);
 
 __gapTrackMaxScroll__
 
-Logs ```gapMaxScroll``` events which indicate the maximum percentage of the page the user scrolled to. This event will only fire once per page, assuming the user scrolled past the minimum percentage specified. The event label will indicate the maximum percentage scrolled. This tracker uses debouncing.
+Logs ```gapMaxScroll``` events which indicate the maximum percentage of the page the user scrolled. This event will, at maximum, fire once per page. Should the user not scroll past the minimum percentage specified, no event will be pushed. The event label indicates the maximum percentage scrolled. This tracker uses debouncing.
 
 ```javascript
 _gap.push([
