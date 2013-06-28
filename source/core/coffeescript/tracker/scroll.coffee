@@ -18,7 +18,6 @@ class GapScrollTracker
 
 				@gap.variables.bounceViaScrollPercentage = commandArray[1]
 				@gap.variables.bounceViaScrollFunction = ->
-					console.log 'fire'
 					if not root._gap.bounced and
 						((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 \
 						>= root._gap.variables.bounceViaScrollPercentage
