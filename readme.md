@@ -24,6 +24,9 @@ _gap.push(['_gapTrackReads', 20, 30]); // Optionally change (cadence and max rea
 // Anytime a user clicks a link, internal or external, push the event.
 _gap.push(['_gapTrackLinkClicks']);
 
+// Track the maximum percentage of the page scrolled, should the percentage be greater than or equal to 25.
+_gap.push(['_gapTrackMaxScroll', 25]);
+
 (function() {
 	var gap = document.createElement('script');
 	gap.async = true;
@@ -39,7 +42,7 @@ _gap.push(['_gapTrackLinkClicks']);
 
 __gapTrackBounceViaScroll__
 
-Logs a single ```gapBounceViaScroll``` event after scrolling n percentage down the page. This event will only fire once per session. The following scenario helps illustrate why you might want to leverage this tracker: 
+Logs a single ```gapBounceViaScroll``` event after scrolling n percentage down the page. This event will only fire once per session. This tracker uses debouncing. The following scenario helps illustrate why you might want to leverage this tracker: 
 
 * User A arrives on your website. He finds a wealth of information he is looking for on the first landing page. He fully scrolls/reads the entire page and then departs. By default, this is considered a bounce in Google Analytics.
 
@@ -100,6 +103,17 @@ Logs ```a``` and ```button``` mousedown events (i.e. user clicks) via event dele
 
 ```javascript
 _gap.push(['_gapTrackLinkClicks']);
+```
+
+__gapTrackMaxScroll__
+
+Logs ```gapMaxScroll``` events which indicate the maximum percentage of the page the user scrolled to. This event will only fire once per page, assuming the user scrolled past the minimum percentage specified. The event label will indicate the maximum percentage scrolled. This tracker uses debouncing.
+
+```javascript
+_gap.push([
+	'_gapTrackMaxScroll',
+	25 // Percentage scrolled before event is fired.
+]);
 ```
 
 ## Versioning

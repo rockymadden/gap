@@ -72,7 +72,7 @@
       this.gap = gap;
     }
 
-    GapScrollTracker.prototype.append = function(fn) {
+    GapScrollTracker.prototype.appendOnScroll = function(fn) {
       var os;
 
       os = root.onscroll;
@@ -86,22 +86,63 @@
       }
     };
 
+    GapScrollTracker.prototype.appendOnUnload = function(fn) {
+      var ou;
+
+      ou = root.onunload;
+      if (ou == null) {
+        return root.onunload = fn;
+      } else {
+        return root.onunload = function(event) {
+          ou(event);
+          return fn(event);
+        };
+      }
+    };
+
     GapScrollTracker.prototype.listen = function(commandArray) {
       switch (commandArray[0]) {
         case '_gapTrackBounceViaScroll':
           if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !this.gap.cookied && !this.gap.bounced) {
             this.gap.variables.bounceViaScrollPercentage = commandArray[1];
             this.gap.variables.bounceViaScrollFunction = function() {
-              if (!root._gap.bounced && ((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 >= root._gap.variables.bounceViaScrollPercentage) {
+              var percentage;
+
+              percentage = Math.floor(((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100);
+              if (!root._gap.bounced && percentage >= root._gap.variables.bounceViaScrollPercentage) {
                 root._gap.bounced = true;
                 return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables.bounceViaScrollPercentage]);
               }
             };
-            return this.append(function(event) {
+            return this.appendOnScroll(function(event) {
               if (root._gap.variables.bounceViaScrollTimeout != null) {
                 clearTimeout(root._gap.variables.bounceViaScrollTimeout);
               }
               return root._gap.variables.bounceViaScrollTimeout = setTimeout(root._gap.variables.bounceViaScrollFunction, 100);
+            });
+          }
+          break;
+        case '_gapTrackMaxScroll':
+          if (commandArray.length === 2 && typeof commandArray[1] === 'number') {
+            this.gap.variables.maxScrollPercentage = commandArray[1];
+            this.gap.variables.maxScrollFunction = function() {
+              var percentage;
+
+              percentage = Math.floor(((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100);
+              if (percentage >= root._gap.variables.maxScrollPercentage && ((root._gap.variables.maxScrolledPercentage == null) || percentage > root._gap.variables.maxScrolledPercentage)) {
+                return root._gap.variables.maxScrolledPercentage = percentage;
+              }
+            };
+            this.appendOnScroll(function(event) {
+              if (root._gap.variables.maxScrollTimeout != null) {
+                clearTimeout(root._gap.variables.maxScrollTimeout);
+              }
+              return root._gap.variables.maxScrollTimeout = setTimeout(root._gap.variables.maxScrollFunction, 100);
+            });
+            return this.appendOnUnload(function(event) {
+              if (root._gap.variables.maxScrolledPercentage != null) {
+                return root._gap.push(['_trackEvent', 'gapMaxScroll', root._gap.variables.maxScrolledPercentage]);
+              }
             });
           }
       }
