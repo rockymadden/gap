@@ -90,12 +90,19 @@
       switch (commandArray[0]) {
         case '_gapTrackBounceViaScroll':
           if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !this.gap.cookied && !this.gap.bounced) {
-            this.gap.variables['bounceViaScrollPercentage'] = commandArray[1];
-            return this.append(function(event) {
-              if (!root._gap.bounced && ((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 >= root._gap.variables['bounceViaScrollPercentage']) {
+            this.gap.variables.bounceViaScrollPercentage = commandArray[1];
+            this.gap.variables.bounceViaScrollFunction = function() {
+              console.log('fire');
+              if (!root._gap.bounced && ((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 >= root._gap.variables.bounceViaScrollPercentage) {
                 root._gap.bounced = true;
-                return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables['bounceViaScrollPercentage']]);
+                return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables.bounceViaScrollPercentage]);
               }
+            };
+            return this.append(function(event) {
+              if (root._gap.variables.bounceViaScrollTimeout != null) {
+                clearTimeout(root._gap.variables.bounceViaScrollTimeout);
+              }
+              return root._gap.variables.bounceViaScrollTimeout = setTimeout(root._gap.variables.bounceViaScrollFunction, 100);
             });
           }
       }

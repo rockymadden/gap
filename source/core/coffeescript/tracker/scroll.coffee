@@ -16,17 +16,23 @@ class GapScrollTracker
 			not @gap.cookied and
 			not @gap.bounced
 
-				@gap.variables['bounceViaScrollPercentage'] = commandArray[1]
-				@append((event) ->
+				@gap.variables.bounceViaScrollPercentage = commandArray[1]
+				@gap.variables.bounceViaScrollFunction = ->
+					console.log 'fire'
 					if not root._gap.bounced and
-					((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 \
-					>= root._gap.variables['bounceViaScrollPercentage']
+						((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 \
+						>= root._gap.variables.bounceViaScrollPercentage
 
-						root._gap.bounced = true
-						root._gap.push([
-							'_trackEvent',
-							'gapBounceViaScroll',
-							root._gap.variables['bounceViaScrollPercentage']
-						])
+							root._gap.bounced = true
+							root._gap.push([
+								'_trackEvent'
+								'gapBounceViaScroll'
+								root._gap.variables.bounceViaScrollPercentage
+							])
+				@append((event) ->
+					if root._gap.variables.bounceViaScrollTimeout?
+						clearTimeout(root._gap.variables.bounceViaScrollTimeout)
+
+					root._gap.variables.bounceViaScrollTimeout = setTimeout(root._gap.variables.bounceViaScrollFunction, 100)
 				)
 
