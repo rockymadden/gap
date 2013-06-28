@@ -4,7 +4,7 @@ unless root._gap? then root._gap = []
 unless root._gaq? then root._gaq = []
 
 (->
-	hasGaSessionCookie = GapUtil.hasCookie("__utmb")
+	hasGaSessionCookie = GapUtil.hasCookie('__utmb')
 
 	ga = root.document.createElement 'script'
 	ga.async = true

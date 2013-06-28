@@ -92,7 +92,6 @@
           if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !this.gap.cookied && !this.gap.bounced) {
             this.gap.variables.bounceViaScrollPercentage = commandArray[1];
             this.gap.variables.bounceViaScrollFunction = function() {
-              console.log('fire');
               if (!root._gap.bounced && ((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100 >= root._gap.variables.bounceViaScrollPercentage) {
                 root._gap.bounced = true;
                 return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables.bounceViaScrollPercentage]);
@@ -123,7 +122,7 @@
       switch (commandArray[0]) {
         case '_gapTrackBounceViaTime':
           if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !this.gap.cookied && !this.gap.bounced) {
-            return this.gap.variables['bounceViaTimeTimeout'] = root.setTimeout((function() {
+            return this.gap.variables.bounceViaTimeTimeout = root.setTimeout((function() {
               if (!root._gap.bounced) {
                 root._gap.bounced = true;
                 return root._gap.push(['_trackEvent', 'gapBounceViaTime', commandArray[1].toString()]);
@@ -133,14 +132,14 @@
           break;
         case '_gapTrackReads':
           if (commandArray.length === 3 && typeof commandArray[1] === 'number' && typeof commandArray[2] === 'number') {
-            this.gap.variables['readsSeconds'] = 0;
-            this.gap.variables['readsSecondsMax'] = commandArray[1] * commandArray[2];
-            return this.gap.variables['readsInterval'] = root.setInterval(fn = (function() {
-              if (root._gap.variables['readsSeconds'] < root._gap.variables['readsSecondsMax']) {
-                root._gap.push(['_trackEvent', 'gapRead', (root._gap.variables['readsSeconds'] += commandArray[1]).toString()]);
+            this.gap.variables.readsSeconds = 0;
+            this.gap.variables.readsSecondsMax = commandArray[1] * commandArray[2];
+            return this.gap.variables.readsInterval = root.setInterval(fn = (function() {
+              if (root._gap.variables.readsSeconds < root._gap.variables.readsSecondsMax) {
+                root._gap.push(['_trackEvent', 'gapRead', (root._gap.variables.readsSeconds += commandArray[1]).toString()]);
                 return fn;
               } else {
-                return clearInterval(root._gap.variables['readsInterval']);
+                return clearInterval(root._gap.variables.readsInterval);
               }
             }), commandArray[1] * 1000);
           }
@@ -232,7 +231,7 @@
   (function() {
     var ga, hasGaSessionCookie, s;
 
-    hasGaSessionCookie = GapUtil.hasCookie("__utmb");
+    hasGaSessionCookie = GapUtil.hasCookie('__utmb');
     ga = root.document.createElement('script');
     ga.async = true;
     ga.type = 'text/javascript';
