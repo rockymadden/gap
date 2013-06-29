@@ -1,4 +1,4 @@
-#GAP - Google Analytics automatic Push [![Build Status](https://travis-ci.org/rockymadden/gap.png?branch=master)](https://travis-ci.org/rockymadden/gap)
+#GAP - Google Analytics auto Push [![Build Status](https://travis-ci.org/rockymadden/gap.png?branch=master)](https://travis-ci.org/rockymadden/gap)
 Dead simple wrapper around the Google Analytics API which provides automatic tracking of user behaviors via events. Want to see the event tracking in action? Open up your JavaScript console and head to the [project site](http://rockymadden.com/gap/).
 
 ##Installation
@@ -25,7 +25,7 @@ _gap.push(['_gapTrackReads', 20, 30]); // Optionally change (cadence and max rea
 _gap.push(['_gapTrackLinkClicks']);
 
 // Track the maximum percentage of the page scrolled, should the percentage be greater than or equal to 25.
-_gap.push(['_gapTrackMaxScroll', 25]);
+_gap.push(['_gapTrackMaxScroll', 25]); // Optionally change (minimum percentage).
 
 (function() {
 	var gap = document.createElement('script');
@@ -107,12 +107,12 @@ _gap.push(['_gapTrackLinkClicks']);
 
 __gapTrackMaxScroll__
 
-Logs ```gapMaxScroll``` events which indicate the maximum percentage of the page the user scrolled. This event will, at maximum, fire once per page. Should the user not scroll past the minimum percentage specified, no event will be pushed. The event label indicates the maximum percentage scrolled. This tracker uses debouncing.
+Logs ```gapMaxScroll``` events which indicate the maximum percentage of the page the user scrolled. This event will be pushed up to once per page. Should the user not scroll past the minimum percentage required, no event will be pushed. The event label indicates the maximum percentage scrolled. This tracker uses debouncing.
 
 ```javascript
 _gap.push([
 	'_gapTrackMaxScroll',
-	25 // Percentage scrolled before event is fired.
+	25 // Minimum percentage scrolled before event is pushed.
 ]);
 ```
 
