@@ -4,6 +4,20 @@
   GapUtil = (function() {
     function GapUtil() {}
 
+    GapUtil.append = function(element, event, fn) {
+      var pfn;
+
+      pfn = element[event];
+      if (pfn == null) {
+        return element[event] = fn;
+      } else {
+        return element[event] = function(e) {
+          pfn(e);
+          return fn(e);
+        };
+      }
+    };
+
     GapUtil.documentHeight = function() {
       return Math.max(root.document.body.scrollHeight || 0, root.document.documentElement.scrollHeight || 0, root.document.body.offsetHeight || 0, root.document.documentElement.offsetHeight || 0, root.document.body.clientHeight || 0, root.document.documentElement.clientHeight || 0);
     };
@@ -37,24 +51,10 @@
       this.gap = gap;
     }
 
-    GapMousedownTracker.prototype.appendOnMousedown = function(fn) {
-      var omd;
-
-      omd = root.document.getElementsByTagName('body')[0].onmousedown;
-      if (omd == null) {
-        return root.document.getElementsByTagName('body')[0].onmousedown = fn;
-      } else {
-        return root.document.getElementsByTagName('body')[0].onmousedown = function(event) {
-          omd(event);
-          return fn(event);
-        };
-      }
-    };
-
     GapMousedownTracker.prototype.listen = function(commandArray) {
       switch (commandArray[0]) {
         case '_gapTrackLinkClicks':
-          return this.appendOnMousedown(function(event) {
+          return GapUtil.append(root.document.getElementsByTagName('body')[0], 'onmousedown', function(event) {
             var href, target, text;
 
             target = event.target || event.srcElement;
@@ -76,34 +76,6 @@
       this.gap = gap;
     }
 
-    GapScrollTracker.prototype.appendOnScroll = function(fn) {
-      var os;
-
-      os = root.onscroll;
-      if (os == null) {
-        return root.onscroll = fn;
-      } else {
-        return root.onscroll = function(event) {
-          os(event);
-          return fn(event);
-        };
-      }
-    };
-
-    GapScrollTracker.prototype.appendOnUnload = function(fn) {
-      var ou;
-
-      ou = root.onunload;
-      if (ou == null) {
-        return root.onunload = fn;
-      } else {
-        return root.onunload = function(event) {
-          ou(event);
-          return fn(event);
-        };
-      }
-    };
-
     GapScrollTracker.prototype.listen = function(commandArray) {
       switch (commandArray[0]) {
         case '_gapTrackBounceViaScroll':
@@ -115,7 +87,7 @@
                 return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables.bounceViaScrollPercentage]);
               }
             };
-            return this.appendOnScroll(function(event) {
+            return GapUtil.append(root, 'onscroll', function(event) {
               if (root._gap.variables.bounceViaScrollTimeout != null) {
                 clearTimeout(root._gap.variables.bounceViaScrollTimeout);
               }
@@ -134,13 +106,13 @@
                 return root._gap.variables.maxScrolledPercentage = percentage;
               }
             };
-            this.appendOnScroll(function(event) {
+            GapUtil.append(root, 'onscroll', function(event) {
               if (root._gap.variables.maxScrollTimeout != null) {
                 clearTimeout(root._gap.variables.maxScrollTimeout);
               }
               return root._gap.variables.maxScrollTimeout = setTimeout(root._gap.variables.maxScrollFunction, 100);
             });
-            return this.appendOnUnload(function(event) {
+            return GapUtil.append(root, 'onunload', function(event) {
               if (root._gap.variables.maxScrolledPercentage != null) {
                 return root._gap.push(['_trackEvent', 'gapMaxScroll', root._gap.variables.maxScrolledPercentage]);
               }

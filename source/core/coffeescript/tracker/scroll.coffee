@@ -1,22 +1,6 @@
 class GapScrollTracker
 	constructor: (gap) -> @gap = gap
 
-	appendOnScroll: (fn) ->
-		os = root.onscroll
-
-		if not os? then root.onscroll = fn
-		else root.onscroll = (event) ->
-			os(event)
-			fn(event)
-
-	appendOnUnload: (fn) ->
-		ou = root.onunload
-
-		if not ou? then root.onunload = fn
-		else root.onunload = (event) ->
-			ou(event)
-			fn(event)
-
 	listen: (commandArray) -> switch commandArray[0]
 		when '_gapTrackBounceViaScroll'
 			if commandArray.length is 2 and typeof commandArray[1] is 'number' and not @gap.cookied and not @gap.bounced
@@ -30,7 +14,7 @@ class GapScrollTracker
 							root._gap.variables.bounceViaScrollPercentage
 						])
 
-				@appendOnScroll((event) ->
+				GapUtil.append(root, 'onscroll', (event) ->
 					if root._gap.variables.bounceViaScrollTimeout? then clearTimeout(root._gap.variables.bounceViaScrollTimeout)
 					root._gap.variables.bounceViaScrollTimeout = setTimeout(root._gap.variables.bounceViaScrollFunction, 100)
 				)
@@ -45,11 +29,11 @@ class GapScrollTracker
 
 						root._gap.variables.maxScrolledPercentage = percentage
 
-				@appendOnScroll((event) ->
+				GapUtil.append(root, 'onscroll', (event) ->
 					if root._gap.variables.maxScrollTimeout? then clearTimeout(root._gap.variables.maxScrollTimeout)
 					root._gap.variables.maxScrollTimeout = setTimeout(root._gap.variables.maxScrollFunction, 100)
 				)
-				@appendOnUnload((event) -> if root._gap.variables.maxScrolledPercentage?
+				GapUtil.append(root, 'onunload', (event) -> if root._gap.variables.maxScrolledPercentage?
 					root._gap.push([
 						'_trackEvent'
 						'gapMaxScroll'

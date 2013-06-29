@@ -1,4 +1,12 @@
 class GapUtil
+	@append: (element, event, fn) ->
+		pfn = element[event]
+
+		if not pfn? then element[event] = fn
+		else element[event] = (e) ->
+			pfn(e)
+			fn(e)
+
 	@documentHeight: -> Math.max(
 		root.document.body.scrollHeight or 0,
 		root.document.documentElement.scrollHeight or 0,
