@@ -13,8 +13,8 @@ class GapTimeTracker
 						if not root._gap.bounced
 							root._gap.bounced = true
 							root._gap.push([
-								'_trackEvent',
-								'gapBounceViaTime',
+								'_trackEvent'
+								'gapBounceViaTime'
 								commandArray[1].toString()
 							])
 					),
@@ -31,8 +31,8 @@ class GapTimeTracker
 					fn = (->
 						if root._gap.variables.readsSeconds < root._gap.variables.readsSecondsMax
 							root._gap.push([
-								'_trackEvent',
-								'gapRead',
+								'_trackEvent'
+								'gapRead'
 								(root._gap.variables.readsSeconds += commandArray[1]).toString()
 							])
 							fn

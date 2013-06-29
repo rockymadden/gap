@@ -12,10 +12,10 @@ unless root._gaq? then root._gaq = []
 	ga.src = if root.location.protocol is 'https:' then 'https://ssl' else 'http://www' + '.google-analytics.com/ga.js'
 	ga.onload = ga.onreadystatechange = ->
 		root._gap = new Gap(
-			root._gap,
-			root._gaq,
-			false,
-			hasGaSessionCookie,
+			root._gap
+			root._gaq
+			false
+			hasGaSessionCookie
 			(root._gapDebug? and root._gapDebug)
 		)
 

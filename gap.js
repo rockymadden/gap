@@ -84,7 +84,7 @@
             this.gap.variables.bounceViaScrollFunction = function() {
               if (!root._gap.bounced && GapUtil.scrolled() >= root._gap.variables.bounceViaScrollPercentage) {
                 root._gap.bounced = true;
-                return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables.bounceViaScrollPercentage]);
+                return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables.bounceViaScrollPercentage.toString()]);
               }
             };
             return GapUtil.append(root, 'onscroll', function(event) {
@@ -114,7 +114,7 @@
             });
             return GapUtil.append(root, 'onunload', function(event) {
               if (root._gap.variables.maxScrolledPercentage != null) {
-                return root._gap.push(['_trackEvent', 'gapMaxScroll', root._gap.variables.maxScrolledPercentage]);
+                return root._gap.push(['_trackEvent', 'gapMaxScroll', root._gap.variables.maxScrolledPercentage.toString()]);
               }
             });
           }

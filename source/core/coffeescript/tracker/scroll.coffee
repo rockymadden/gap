@@ -11,7 +11,7 @@ class GapScrollTracker
 						root._gap.push([
 							'_trackEvent'
 							'gapBounceViaScroll'
-							root._gap.variables.bounceViaScrollPercentage
+							root._gap.variables.bounceViaScrollPercentage.toString()
 						])
 
 				GapUtil.append(root, 'onscroll', (event) ->
@@ -37,6 +37,6 @@ class GapScrollTracker
 					root._gap.push([
 						'_trackEvent'
 						'gapMaxScroll'
-						root._gap.variables.maxScrolledPercentage
+						root._gap.variables.maxScrolledPercentage.toString()
 					])
 				)

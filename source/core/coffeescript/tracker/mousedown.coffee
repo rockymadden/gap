@@ -11,8 +11,8 @@ class GapMousedownTracker
 					href = target.href or ''
 
 					root._gap.push([
-						'_trackEvent',
-						'gapLinkClick',
+						'_trackEvent'
+						'gapLinkClick'
 						text.replace(/^\s+|\s+$/g, '') + ' (' + href + ')'
 					])
 			)
