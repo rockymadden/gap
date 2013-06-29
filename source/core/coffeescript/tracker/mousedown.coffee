@@ -1,7 +1,7 @@
 class GapMousedownTracker
 	constructor: (gap) -> @gap = gap
 
-	append: (fn) ->
+	appendOnMousedown: (fn) ->
 		omd = root.document.getElementsByTagName('body')[0].onmousedown
 
 		if not omd? then root.document.getElementsByTagName('body')[0].onmousedown = fn
@@ -11,7 +11,7 @@ class GapMousedownTracker
 
 	listen: (commandArray) -> switch commandArray[0]
 		when '_gapTrackLinkClicks'
-			@append((event) ->
+			@appendOnMousedown((event) ->
 				target = event.target or event.srcElement
 
 				if target? and (target.nodeName is 'A' or target.nodeName is 'BUTTON')

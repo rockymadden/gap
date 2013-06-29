@@ -22,9 +22,7 @@ class GapScrollTracker
 			if commandArray.length is 2 and typeof commandArray[1] is 'number' and not @gap.cookied and not @gap.bounced
 				@gap.variables.bounceViaScrollPercentage = commandArray[1]
 				@gap.variables.bounceViaScrollFunction = ->
-					percentage = Math.floor(((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100)
-
-					if not root._gap.bounced and percentage >= root._gap.variables.bounceViaScrollPercentage
+					if not root._gap.bounced and GapUtil.scrolled() >= root._gap.variables.bounceViaScrollPercentage
 						root._gap.bounced = true
 						root._gap.push([
 							'_trackEvent'
@@ -40,7 +38,7 @@ class GapScrollTracker
 			if commandArray.length is 2 and typeof commandArray[1] is 'number'
 				@gap.variables.maxScrollPercentage = commandArray[1]
 				@gap.variables.maxScrollFunction = ->
-					percentage = Math.floor(((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100)
+					percentage = GapUtil.scrolled()
 
 					if percentage >= root._gap.variables.maxScrollPercentage and
 					(not root._gap.variables.maxScrolledPercentage? or percentage > root._gap.variables.maxScrolledPercentage)
@@ -58,4 +56,3 @@ class GapScrollTracker
 						root._gap.variables.maxScrolledPercentage
 					])
 				)
-

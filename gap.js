@@ -16,6 +16,10 @@
       return (potential != null) && {}.toString.call(potential) === '[object Array]' && potential.length > 0;
     };
 
+    GapUtil.scrolled = function() {
+      return Math.floor(((this.windowScroll() + this.windowHeight()) / this.documentHeight()) * 100);
+    };
+
     GapUtil.windowHeight = function() {
       return root.innerHeight || root.document.documentElement.clientHeight || root.document.body.clientHeight || 0;
     };
@@ -33,7 +37,7 @@
       this.gap = gap;
     }
 
-    GapMousedownTracker.prototype.append = function(fn) {
+    GapMousedownTracker.prototype.appendOnMousedown = function(fn) {
       var omd;
 
       omd = root.document.getElementsByTagName('body')[0].onmousedown;
@@ -50,7 +54,7 @@
     GapMousedownTracker.prototype.listen = function(commandArray) {
       switch (commandArray[0]) {
         case '_gapTrackLinkClicks':
-          return this.append(function(event) {
+          return this.appendOnMousedown(function(event) {
             var href, target, text;
 
             target = event.target || event.srcElement;
@@ -106,10 +110,7 @@
           if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !this.gap.cookied && !this.gap.bounced) {
             this.gap.variables.bounceViaScrollPercentage = commandArray[1];
             this.gap.variables.bounceViaScrollFunction = function() {
-              var percentage;
-
-              percentage = Math.floor(((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100);
-              if (!root._gap.bounced && percentage >= root._gap.variables.bounceViaScrollPercentage) {
+              if (!root._gap.bounced && GapUtil.scrolled() >= root._gap.variables.bounceViaScrollPercentage) {
                 root._gap.bounced = true;
                 return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables.bounceViaScrollPercentage]);
               }
@@ -128,7 +129,7 @@
             this.gap.variables.maxScrollFunction = function() {
               var percentage;
 
-              percentage = Math.floor(((GapUtil.windowScroll() + GapUtil.windowHeight()) / GapUtil.documentHeight()) * 100);
+              percentage = GapUtil.scrolled();
               if (percentage >= root._gap.variables.maxScrollPercentage && ((root._gap.variables.maxScrolledPercentage == null) || percentage > root._gap.variables.maxScrolledPercentage)) {
                 return root._gap.variables.maxScrolledPercentage = percentage;
               }

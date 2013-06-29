@@ -13,6 +13,8 @@ class GapUtil
 	@isCommandArray: (potential) ->
 		potential? and {}.toString.call(potential) is '[object Array]' and potential.length > 0
 
+	@scrolled: -> Math.floor(((@windowScroll() + @windowHeight()) / @documentHeight()) * 100)
+
 	@windowHeight: ->
 		root.innerHeight or root.document.documentElement.clientHeight or root.document.body.clientHeight or 0
 
