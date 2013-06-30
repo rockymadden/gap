@@ -1,14 +1,42 @@
 (function() {
-  var Gap, GapMousedownTracker, GapScrollTracker, GapTimeTracker, GapUtil, root;
+  var Dom, Func, Gap, GapMousedownTracker, GapScrollTracker, GapTimeTracker, root;
 
-  GapUtil = (function() {
-    function GapUtil() {}
+  Func = (function() {
+    function Func() {}
 
-    GapUtil.append = function(element, event, fn) {
+    Func.existy = function(a) {
+      return a != null;
+    };
+
+    Func.lengthy = function(a) {
+      return this.truthy(a) && a.hasOwnProperty('length') && a.length > 0;
+    };
+
+    Func.truthy = function(a) {
+      return this.existy(a) && (a !== false);
+    };
+
+    return Func;
+
+  })();
+
+  Dom = (function() {
+    function Dom() {}
+
+    Dom.append = function(element, event, fn) {
       var pfn;
 
+      if (!Func.existy(element) || typeof element !== 'object') {
+        this.error('Expected valid element.');
+      }
+      if (!Func.existy(event) || typeof event !== 'string') {
+        this.error('Expected valid event.');
+      }
+      if (!Func.existy(fn) || typeof fn !== 'function') {
+        this.error('Expected valid fn.');
+      }
       pfn = element[event];
-      if (pfn == null) {
+      if (!Func.existy(pfn)) {
         return element[event] = fn;
       } else {
         return element[event] = function(e) {
@@ -18,50 +46,78 @@
       }
     };
 
-    GapUtil.documentHeight = function() {
+    Dom.debug = function(message) {
+      var m;
+
+      if (!Func.lengthy(message) || typeof message !== 'string') {
+        this.error('Expected valid debug message.');
+      }
+      m = ['DEBUG:', message].join(' ');
+      if (Func.existy(root.console)) {
+        return root.console.log(m);
+      } else {
+        return root.alert(n);
+      }
+    };
+
+    Dom.documentHeight = function() {
       return Math.max(root.document.body.scrollHeight || 0, root.document.documentElement.scrollHeight || 0, root.document.body.offsetHeight || 0, root.document.documentElement.offsetHeight || 0, root.document.body.clientHeight || 0, root.document.documentElement.clientHeight || 0);
     };
 
-    GapUtil.hasCookie = function(name) {
+    Dom.hasCookie = function(name) {
+      if (!Func.lengthy(name) || typeof name !== 'string') {
+        this.error('Expected valid name.');
+      }
       return root.document.cookie.indexOf(name) >= 0;
     };
 
-    GapUtil.isCommandArray = function(potential) {
-      return (potential != null) && {}.toString.call(potential) === '[object Array]' && potential.length > 0;
+    Dom.error = function(message) {
+      if (!Func.lengthy(message) || typeof message !== 'string') {
+        message = 'Expected valid error message.';
+      }
+      throw new Error(message);
     };
 
-    GapUtil.scrolled = function() {
+    Dom.scrolledPercent = function() {
       return Math.floor(((this.windowScroll() + this.windowHeight()) / this.documentHeight()) * 100);
     };
 
-    GapUtil.windowHeight = function() {
+    Dom.windowHeight = function() {
       return root.innerHeight || root.document.documentElement.clientHeight || root.document.body.clientHeight || 0;
     };
 
-    GapUtil.windowScroll = function() {
+    Dom.windowScroll = function() {
       return root.pageYOffset || root.document.body.scrollTop || root.document.documentElement.scrollTop || 0;
     };
 
-    return GapUtil;
+    return Dom;
 
   })();
 
   GapMousedownTracker = (function() {
-    function GapMousedownTracker(gap) {
-      this.gap = gap;
+    function GapMousedownTracker(gap, state) {
+      if (!Func.existy(gap) || typeof gap !== 'object') {
+        Dom.error('Expected gap to be an object.');
+      }
+      if (!Func.existy(state) || typeof state !== 'object') {
+        Dom.error('Expected state to be an object.');
+      }
+      this._gap = gap;
+      this.state = state;
     }
 
     GapMousedownTracker.prototype.listen = function(commandArray) {
       switch (commandArray[0]) {
         case '_gapTrackLinkClicks':
-          return GapUtil.append(root.document.getElementsByTagName('body')[0], 'onmousedown', function(event) {
-            var href, target, text;
+          return Dom.append(root.document.getElementsByTagName('body')[0], 'onmousedown', function(event) {
+            var gap, href, target, text;
 
             target = event.target || event.srcElement;
-            if ((target != null) && (target.nodeName === 'A' || target.nodeName === 'BUTTON')) {
-              text = target.innerText || target.textContent;
+            if (Func.existy(target) && (target.nodeName === 'A' || target.nodeName === 'BUTTON')) {
+              gap = root._gap;
               href = target.href || '';
-              return root._gap.push(['_trackEvent', 'gapLinkClick', text.replace(/^\s+|\s+$/g, '') + ' (' + href + ')']);
+              text = target.innerText || target.textContent;
+              return gap.push(['_trackEvent', 'gapLinkClick', text.replace(/^\s+|\s+$/g, '') + ' (' + href + ')']);
             }
           });
       }
@@ -72,49 +128,73 @@
   })();
 
   GapScrollTracker = (function() {
-    function GapScrollTracker(gap) {
-      this.gap = gap;
+    function GapScrollTracker(gap, state) {
+      if (!Func.existy(gap) || typeof gap !== 'object') {
+        Dom.error('Expected gap to be an object.');
+      }
+      if (!Func.existy(state) || typeof state !== 'object') {
+        Dom.error('Expected state to be an object.');
+      }
+      this._gap = gap;
+      this.state = state;
     }
 
     GapScrollTracker.prototype.listen = function(commandArray) {
       switch (commandArray[0]) {
         case '_gapTrackBounceViaScroll':
-          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !this.gap.cookied && !this.gap.bounced) {
-            this.gap.variables.bounceViaScrollPercentage = commandArray[1];
-            this.gap.variables.bounceViaScrollFunction = function() {
-              if (!root._gap.bounced && GapUtil.scrolled() >= root._gap.variables.bounceViaScrollPercentage) {
-                root._gap.bounced = true;
-                return root._gap.push(['_trackEvent', 'gapBounceViaScroll', root._gap.variables.bounceViaScrollPercentage.toString()]);
+          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !Func.truthy(this._gap.state.cookied) && !Func.truthy(this._gap.state.bounced)) {
+            this.state.bounceViaScrollPercent = commandArray[1];
+            this.state.bounceViaScrollFunction = function() {
+              var gap, gapState, percent, trackerState;
+
+              gap = root._gap;
+              gapState = root._gap.state;
+              percent = Dom.scrolledPercent();
+              trackerState = root._gap.trackers.scroll.state;
+              if (!Func.truthy(gapState.bounced) && percent >= trackerState.bounceViaScrollPercent) {
+                gapState.bounced = true;
+                return gap.push(['_trackEvent', 'gapBounceViaScroll', trackerState.bounceViaScrollPercent.toString()]);
               }
             };
-            return GapUtil.append(root, 'onscroll', function(event) {
-              if (root._gap.variables.bounceViaScrollTimeout != null) {
-                clearTimeout(root._gap.variables.bounceViaScrollTimeout);
+            return Dom.append(root, 'onscroll', function(event) {
+              var trackerState;
+
+              trackerState = root._gap.trackers.scroll.state;
+              if (Func.existy(trackerState.bounceViaScrollTimeout)) {
+                clearTimeout(trackerState.bounceViaScrollTimeout);
               }
-              return root._gap.variables.bounceViaScrollTimeout = setTimeout(root._gap.variables.bounceViaScrollFunction, 100);
+              return trackerState.bounceViaScrollTimeout = setTimeout(trackerState.bounceViaScrollFunction, 100);
             });
           }
           break;
         case '_gapTrackMaxScroll':
           if (commandArray.length === 2 && typeof commandArray[1] === 'number') {
-            this.gap.variables.maxScrollPercentage = commandArray[1];
-            this.gap.variables.maxScrollFunction = function() {
-              var percentage;
+            this.state.maxScrollPercent = commandArray[1];
+            this.state.maxScrollFunction = function() {
+              var percent, trackerState;
 
-              percentage = GapUtil.scrolled();
-              if (percentage >= root._gap.variables.maxScrollPercentage && ((root._gap.variables.maxScrolledPercentage == null) || percentage > root._gap.variables.maxScrolledPercentage)) {
-                return root._gap.variables.maxScrolledPercentage = percentage;
+              percent = Dom.scrolledPercent();
+              trackerState = root._gap.trackers.scroll.state;
+              if (percent >= trackerState.maxScrollPercent && (!Func.existy(trackerState.maxScrolledPercent) || percent > trackerState.maxScrolledPercent)) {
+                return trackerState.maxScrolledPercent = percent;
               }
             };
-            GapUtil.append(root, 'onscroll', function(event) {
-              if (root._gap.variables.maxScrollTimeout != null) {
-                clearTimeout(root._gap.variables.maxScrollTimeout);
+            Dom.append(root, 'onscroll', function(event) {
+              var trackerState;
+
+              trackerState = root._gap.trackers.scroll.state;
+              if (Func.existy(trackerState.maxScrollTimeout)) {
+                clearTimeout(trackerState.maxScrollTimeout);
               }
-              return root._gap.variables.maxScrollTimeout = setTimeout(root._gap.variables.maxScrollFunction, 100);
+              return trackerState.maxScrollTimeout = setTimeout(trackerState.maxScrollFunction, 100);
             });
-            return GapUtil.append(root, 'onunload', function(event) {
-              if (root._gap.variables.maxScrolledPercentage != null) {
-                return root._gap.push(['_trackEvent', 'gapMaxScroll', root._gap.variables.maxScrolledPercentage.toString()]);
+            return Dom.append(root, 'onunload', function(event) {
+              var gap, trackerState;
+
+              gap = root._gap;
+              trackerState = root._gap.trackers.scroll.state;
+              if (Func.existy(trackerState.maxScrolledPercent)) {
+                return gap.push(['_trackEvent', 'gapMaxScroll', trackerState.maxScrolledPercent.toString()]);
               }
             });
           }
@@ -126,8 +206,15 @@
   })();
 
   GapTimeTracker = (function() {
-    function GapTimeTracker(gap) {
-      this.gap = gap;
+    function GapTimeTracker(gap, state) {
+      if (!Func.existy(gap) || typeof gap !== 'object') {
+        Dom.error('Expected gap to be an object.');
+      }
+      if (!Func.existy(state) || typeof state !== 'object') {
+        Dom.error('Expected state to be an object.');
+      }
+      this._gap = gap;
+      this.state = state;
     }
 
     GapTimeTracker.prototype.listen = function(commandArray) {
@@ -135,25 +222,33 @@
 
       switch (commandArray[0]) {
         case '_gapTrackBounceViaTime':
-          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !this.gap.cookied && !this.gap.bounced) {
-            return this.gap.variables.bounceViaTimeTimeout = root.setTimeout((function() {
-              if (!root._gap.bounced) {
-                root._gap.bounced = true;
-                return root._gap.push(['_trackEvent', 'gapBounceViaTime', commandArray[1].toString()]);
+          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !Func.truthy(this._gap.state.cookied) && !Func.truthy(this._gap.state.bounced)) {
+            return this.state.bounceViaTimeTimeout = root.setTimeout((function() {
+              var gap, gapState;
+
+              gap = root._gap;
+              gapState = this._gap.state;
+              if (!Func.truthy(gapState.bounced)) {
+                gapState.bounced = true;
+                return gap.push(['_trackEvent', 'gapBounceViaTime', commandArray[1].toString()]);
               }
             }), commandArray[1] * 1000);
           }
           break;
         case '_gapTrackReads':
           if (commandArray.length === 3 && typeof commandArray[1] === 'number' && typeof commandArray[2] === 'number') {
-            this.gap.variables.readsSeconds = 0;
-            this.gap.variables.readsSecondsMax = commandArray[1] * commandArray[2];
-            return this.gap.variables.readsInterval = root.setInterval(fn = (function() {
-              if (root._gap.variables.readsSeconds < root._gap.variables.readsSecondsMax) {
-                root._gap.push(['_trackEvent', 'gapRead', (root._gap.variables.readsSeconds += commandArray[1]).toString()]);
+            this.state.readsSeconds = 0;
+            this.state.readsSecondsMax = commandArray[1] * commandArray[2];
+            return this.state.readsInterval = root.setInterval(fn = (function() {
+              var gap, trackerState;
+
+              gap = root._gap;
+              trackerState = root._gap.trackers.time.state;
+              if (trackerState.readsSeconds < trackerState.readsSecondsMax) {
+                gap.push(['_trackEvent', 'gapRead', (trackerState.readsSeconds += commandArray[1]).toString()]);
                 return fn;
               } else {
-                return clearInterval(root._gap.variables.readsInterval);
+                return clearInterval(trackerState.readsInterval);
               }
             }), commandArray[1] * 1000);
           }
@@ -165,67 +260,78 @@
   })();
 
   Gap = (function() {
-    function Gap(gap, gaq, bounced, cookied, debugging) {
-      this.bounced = bounced;
-      this.cookied = cookied;
-      this.debugging = debugging;
-      this.gaq = gaq;
-      this.history = [];
-      this.subscribers = [];
-      this.variables = {};
-      this.subscribe(new GapTimeTracker(this));
-      this.subscribe(new GapMousedownTracker(this));
-      this.subscribe(new GapScrollTracker(this));
-      if (GapUtil.isCommandArray(gap) != null) {
+    function Gap(gap, gaq, state) {
+      if (!Func.existy(gap) || typeof gap !== 'object') {
+        Dom.error('Expected gap to be an object.');
+      }
+      if (!Func.existy(gaq) || typeof gaq !== 'object') {
+        Dom.error('Expected gaq to be an object.');
+      }
+      if (!Func.existy(state) || typeof state !== 'object') {
+        Dom.error('Expected state to be an object.');
+      }
+      this._gaq = gaq;
+      this.state = state;
+      this.trackers = {};
+      this.subscribe('time', new GapTimeTracker(this, {}));
+      this.subscribe('mousedown', new GapMousedownTracker(this, {}));
+      this.subscribe('scroll', new GapScrollTracker(this, {}));
+      if (this.isCommand(gap)) {
         this.push(gap);
       }
     }
 
-    Gap.prototype.debug = function(commandArray) {
-      this.history.push(commandArray);
-      if (root.console != null) {
-        return root.console.log('Pushed: ' + commandArray.toString());
-      } else {
-        return root.alert('Pushed: ' + commandArray.toString());
-      }
+    Gap.prototype.isCommand = function(command) {
+      return Func.lengthy(command) && {}.toString.call(command) === '[object Array]';
     };
 
-    Gap.prototype.publish = function(commandArray) {
-      var subscriber, _i, _len, _ref, _results;
+    Gap.prototype.publish = function(command) {
+      var k, t, _ref, _results;
 
-      _ref = this.subscribers;
+      if (!this.isCommand(command)) {
+        Dom.error('Expected valid command.');
+      }
+      _ref = this.trackers;
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        subscriber = _ref[_i];
-        _results.push(subscriber.listen(commandArray));
+      for (k in _ref) {
+        t = _ref[k];
+        _results.push(t.listen(command));
       }
       return _results;
     };
 
-    Gap.prototype.push = function(commandArray) {
+    Gap.prototype.push = function(command) {
       var i, _i, _len, _results;
 
-      if (GapUtil.isCommandArray(commandArray)) {
-        if (GapUtil.isCommandArray(commandArray[0])) {
-          _results = [];
-          for (_i = 0, _len = commandArray.length; _i < _len; _i++) {
-            i = commandArray[_i];
-            _results.push(this.push(i));
-          }
-          return _results;
-        } else if (commandArray[0].indexOf('_gap') === 0) {
-          return this.publish(commandArray);
-        } else {
-          this.gaq.push(commandArray);
-          if (this.debugging != null) {
-            return this.debug(commandArray);
+      if (!this.isCommand(command)) {
+        Dom.error('Expected valid command.');
+      }
+      if (this.isCommand(command[0])) {
+        _results = [];
+        for (_i = 0, _len = command.length; _i < _len; _i++) {
+          i = command[_i];
+          _results.push(this.push(i));
+        }
+        return _results;
+      } else {
+        this.publish(command);
+        if (command[0].indexOf('_gap') !== 0) {
+          this._gaq.push(command);
+          if (Func.truthy(this.state.debugging)) {
+            return Dom.debug(['[', command.toString(), ']'].join(' '));
           }
         }
       }
     };
 
-    Gap.prototype.subscribe = function(subscriber) {
-      return this.subscribers.push(subscriber);
+    Gap.prototype.subscribe = function(key, tracker) {
+      if (!Func.existy(key) || typeof key !== 'string') {
+        Dom.error('Expected key to be a string.');
+      }
+      if (!Func.existy(tracker) || typeof tracker !== 'object') {
+        Dom.error('Expected tracker to be an object.');
+      }
+      return this.trackers[key] = tracker;
     };
 
     return Gap;
@@ -243,15 +349,18 @@
   }
 
   (function() {
-    var ga, hasGaSessionCookie, s;
+    var ga, hasCookie, s;
 
-    hasGaSessionCookie = GapUtil.hasCookie('__utmb');
+    hasCookie = Dom.hasCookie('__utmb');
     ga = root.document.createElement('script');
     ga.async = true;
     ga.type = 'text/javascript';
     ga.src = root.location.protocol === 'https:' ? 'https://ssl' : 'http://www' + '.google-analytics.com/ga.js';
     ga.onload = ga.onreadystatechange = function() {
-      return root._gap = new Gap(root._gap, root._gaq, false, hasGaSessionCookie, (root._gapDebug != null) && root._gapDebug);
+      return root._gap = new Gap(root._gap, root._gaq, {
+        cookied: hasCookie,
+        debugging: Func.truthy(root._gapDebug)
+      });
     };
     s = root.document.getElementsByTagName('script')[0];
     return s.parentNode.insertBefore(ga, s);

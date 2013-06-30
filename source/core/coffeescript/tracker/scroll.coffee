@@ -1,42 +1,63 @@
 class GapScrollTracker
-	constructor: (gap) -> @gap = gap
+	constructor: (gap, state) ->
+		if not Func.existy(gap) or typeof gap isnt 'object' then Dom.error('Expected gap to be an object.')
+		if not Func.existy(state) or typeof state isnt 'object' then Dom.error('Expected state to be an object.')
+
+		@_gap = gap
+		@state = state
 
 	listen: (commandArray) -> switch commandArray[0]
 		when '_gapTrackBounceViaScroll'
-			if commandArray.length is 2 and typeof commandArray[1] is 'number' and not @gap.cookied and not @gap.bounced
-				@gap.variables.bounceViaScrollPercentage = commandArray[1]
-				@gap.variables.bounceViaScrollFunction = ->
-					if not root._gap.bounced and GapUtil.scrolled() >= root._gap.variables.bounceViaScrollPercentage
-						root._gap.bounced = true
-						root._gap.push([
+			if commandArray.length is 2 and typeof commandArray[1] is 'number' and
+			not Func.truthy(@_gap.state.cookied) and not Func.truthy(@_gap.state.bounced)
+
+				@state.bounceViaScrollPercent = commandArray[1]
+				@state.bounceViaScrollFunction = ->
+					gap = root._gap
+					gapState = root._gap.state
+					percent = Dom.scrolledPercent()
+					trackerState = root._gap.trackers.scroll.state
+
+					if not Func.truthy(gapState.bounced) and percent >= trackerState.bounceViaScrollPercent
+						gapState.bounced = true
+						gap.push([
 							'_trackEvent'
 							'gapBounceViaScroll'
-							root._gap.variables.bounceViaScrollPercentage.toString()
+							trackerState.bounceViaScrollPercent.toString()
 						])
 
-				GapUtil.append(root, 'onscroll', (event) ->
-					if root._gap.variables.bounceViaScrollTimeout? then clearTimeout(root._gap.variables.bounceViaScrollTimeout)
-					root._gap.variables.bounceViaScrollTimeout = setTimeout(root._gap.variables.bounceViaScrollFunction, 100)
+				Dom.append(root, 'onscroll', (event) ->
+					trackerState = root._gap.trackers.scroll.state
+
+					if Func.existy(trackerState.bounceViaScrollTimeout) then clearTimeout(trackerState.bounceViaScrollTimeout)
+					trackerState.bounceViaScrollTimeout = setTimeout(trackerState.bounceViaScrollFunction, 100)
 				)
 		when '_gapTrackMaxScroll'
 			if commandArray.length is 2 and typeof commandArray[1] is 'number'
-				@gap.variables.maxScrollPercentage = commandArray[1]
-				@gap.variables.maxScrollFunction = ->
-					percentage = GapUtil.scrolled()
+				@state.maxScrollPercent = commandArray[1]
+				@state.maxScrollFunction = ->
+					percent = Dom.scrolledPercent()
+					trackerState = root._gap.trackers.scroll.state
 
-					if percentage >= root._gap.variables.maxScrollPercentage and
-					(not root._gap.variables.maxScrolledPercentage? or percentage > root._gap.variables.maxScrolledPercentage)
+					if percent >= trackerState.maxScrollPercent and
+					(not Func.existy(trackerState.maxScrolledPercent) or percent > trackerState.maxScrolledPercent)
 
-						root._gap.variables.maxScrolledPercentage = percentage
+						trackerState.maxScrolledPercent = percent
 
-				GapUtil.append(root, 'onscroll', (event) ->
-					if root._gap.variables.maxScrollTimeout? then clearTimeout(root._gap.variables.maxScrollTimeout)
-					root._gap.variables.maxScrollTimeout = setTimeout(root._gap.variables.maxScrollFunction, 100)
+				Dom.append(root, 'onscroll', (event) ->
+					trackerState = root._gap.trackers.scroll.state
+
+					if Func.existy(trackerState.maxScrollTimeout) then clearTimeout(trackerState.maxScrollTimeout)
+					trackerState.maxScrollTimeout = setTimeout(trackerState.maxScrollFunction, 100)
 				)
-				GapUtil.append(root, 'onunload', (event) -> if root._gap.variables.maxScrolledPercentage?
-					root._gap.push([
-						'_trackEvent'
-						'gapMaxScroll'
-						root._gap.variables.maxScrolledPercentage.toString()
-					])
+				Dom.append(root, 'onunload', (event) ->
+					gap = root._gap
+					trackerState = root._gap.trackers.scroll.state
+
+					if Func.existy(trackerState.maxScrolledPercent)
+						gap.push([
+							'_trackEvent'
+							'gapMaxScroll'
+							trackerState.maxScrolledPercent.toString()
+						])
 				)

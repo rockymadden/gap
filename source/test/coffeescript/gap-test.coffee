@@ -1,46 +1,30 @@
 root = window
-listener = null
+tracker = null
 
 module('Gap',
-	setup: -> listener = new (class Litsener
+	setup: -> tracker = new (class Tracker
 		constructor: -> @listened = false
-		listen: (commandArray, gap) -> @listened = true
+		listen: (command) -> @listened = true
 	)()
 )
 
-test 'bounced property should be available and false', 2, ->
-	ok(root._gap.bounced?)
-	equal(root._gap.bounced, false)
+test 'state property should be available', 1, -> ok(root._gap.state?)
 
-test 'cookied property should be available and false', 2, ->
-	ok(root._gap.cookied?)
-	equal(root._gap.cookied, false)
+test 'trackers property should be available', 1, -> ok(root._gap.trackers?)
 
-test 'debugging property should be available and true', 2, ->
-	ok(root._gap.debugging?)
-	equal(root._gap.debugging, true)
+test 'subscribe method should add tracker', 2, ->
+	root._gap.trackers = {}
+	equal(Object.keys(root._gap.trackers).length, 0)
+	root._gap.subscribe('tracker', tracker)
+	equal(Object.keys(root._gap.trackers).length, 1)
 
-test 'gaq property should be available', 1, -> ok(root._gap.gaq?)
-
-test 'history property should be available', 1, -> ok(root._gap.history?)
-
-test 'subscribers property should be available', 1, -> ok(root._gap.subscribers?)
-
-test 'variables property should be available', 1, -> ok(root._gap.variables?)
-
-test 'subscribe method should add subscriber', 2, ->
-	root._gap.subscribers = []
-	equal(root._gap.subscribers.length, 0)
-	root._gap.subscribe(listener)
-	equal(root._gap.subscribers.length, 1)
-
-test 'publish method should send message to subscribers', 2, ->
-	root._gap.subscribers = []
-	root._gap.subscribe(listener)
-	equal(root._gap.subscribers[0].listened, false)
+test 'publish method should send message to trackers', 2, ->
+	root._gap.subscribers = {}
+	root._gap.subscribe('tracker', tracker)
+	equal(root._gap.trackers.tracker.listened, false)
 	root._gap.publish(['commandArray'])
-	equal(root._gap.subscribers[0].listened, true)
+	equal(root._gap.trackers.tracker.listened, true)
 
 test 'push method should not throw', 1, ->
-	root._gap.push('commandArray')
+	root._gap.push(['command'])
 	ok(true)

@@ -22,12 +22,13 @@
 			_gap.push(["_gapTrackReads", 20, 30]);
 			_gap.push(["_gapTrackLinkClicks"]);
 			_gap.push(["_gapTrackMaxScroll", 25]);
+			_gapDebug = true;
 
 			(function() {
 				var gap = document.createElement("script");
 				gap.async = true;
 				gap.type = "text/javascript";
-				gap.src = "./gap.min.js";
+				gap.src = "./gap.js";
 
 				var s = document.getElementsByTagName("script")[0];
 				s.parentNode.insertBefore(gap, s);
