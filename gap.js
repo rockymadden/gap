@@ -363,7 +363,17 @@
       });
     };
     s = root.document.getElementsByTagName('script')[0];
-    return s.parentNode.insertBefore(ga, s);
+    s.parentNode.insertBefore(ga, s);
+    if (Func.truthy(root._gapDebug)) {
+      return root.Gap = {
+        Dom: Dom,
+        Gap: Gap,
+        GapMousedownTracker: GapMousedownTracker,
+        GapScrollTracker: GapScrollTracker,
+        GapTimeTracker: GapTimeTracker,
+        Func: Func
+      };
+    }
   })();
 
 }).call(this);

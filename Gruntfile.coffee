@@ -14,6 +14,7 @@ module.exports = (grunt) ->
 					'source/core/coffeescript/core.coffee'
 				]
 			test: files: [
+				'build/func-test.js': 'source/test/coffeescript/func-test.coffee'
 				'build/core-test.js': 'source/test/coffeescript/core-test.coffee'
 				'build/gap-test.js': 'source/test/coffeescript/gap-test.coffee'
 				'build/tracker/mousedown-test.js': 'source/test/coffeescript/tracker/mousedown-test.coffee'
@@ -26,6 +27,7 @@ module.exports = (grunt) ->
 				'gap.min.js': 'build/gap.min.js'
 			]
 			test: files: [
+				'build/func-test.html': 'source/test/html/func-test.html'
 				'build/core-test.html': 'source/test/html/core-test.html'
 				'build/gap-test.html': 'source/test/html/gap-test.html'
 				'build/readme-test.html': 'source/test/html/readme-test.html'

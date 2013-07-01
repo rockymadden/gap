@@ -15,4 +15,12 @@ unless root._gaq? then root._gaq = []
 
 	s = root.document.getElementsByTagName('script')[0]
 	s.parentNode.insertBefore(ga, s)
+
+	if Func.truthy(root._gapDebug) then root.Gap =
+		Dom: Dom
+		Gap: Gap
+		GapMousedownTracker: GapMousedownTracker
+		GapScrollTracker: GapScrollTracker
+		GapTimeTracker: GapTimeTracker
+		Func: Func
 )()

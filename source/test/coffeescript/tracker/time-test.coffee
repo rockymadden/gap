@@ -11,7 +11,7 @@ module('GapTimeTracker',
 		root._gap.subscribe('tracker', tracker)
 )
 
-test '_gapTrackBounceViaTime should push a gapBounceViaTime event', ->
+test 'listen with _gapTrackBounceViaTime', ->
 	stop()
 
 	setTimeout(
@@ -23,7 +23,7 @@ test '_gapTrackBounceViaTime should push a gapBounceViaTime event', ->
 		1250
 	)
 
-test '_gapTrackReads should push gapRead events', ->
+test 'listen with _gapTrackReads', ->
 	stop()
 
 	setTimeout(
