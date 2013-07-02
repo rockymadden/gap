@@ -1,7 +1,7 @@
 root = window
 tracker = null
 
-module('Gap',
+module('Api',
 	setup: -> tracker = new (class Tracker
 		constructor: -> @listened = false
 		listen: (command) -> @listened = true
