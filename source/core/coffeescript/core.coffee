@@ -11,16 +11,15 @@ unless root._gaq? then root._gaq = []
 	ga.type = 'text/javascript'
 	ga.src = if root.location.protocol is 'https:' then 'https://ssl' else 'http://www' + '.google-analytics.com/ga.js'
 	ga.onload = ga.onreadystatechange = ->
-		root._gap = new Gap(root._gap, root._gaq, {cookied: hasCookie, debugging: Func.truthy(root._gapDebug)})
+		root._gap = new Api(root._gap, root._gaq, {cookied: hasCookie, debugging: Func.truthy(root._gapDebug)})
+		root.gap =
+			Api: Api
+			Dom: Dom
+			Func: Func
+			MousedownTracker: MousedownTracker
+			ScrollTracker: ScrollTracker
+			TimeTracker: TimeTracker
 
 	s = root.document.getElementsByTagName('script')[0]
 	s.parentNode.insertBefore(ga, s)
-
-	if Func.truthy(root._gapDebug) then root.Gap =
-		Dom: Dom
-		Gap: Gap
-		GapMousedownTracker: GapMousedownTracker
-		GapScrollTracker: GapScrollTracker
-		GapTimeTracker: GapTimeTracker
-		Func: Func
 )()

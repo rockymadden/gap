@@ -1,9 +1,9 @@
-class GapMousedownTracker
-	constructor: (gap, state) ->
-		if not Func.existy(gap) or typeof gap isnt 'object' then Dom.error('Expected gap to be an object.')
+class MousedownTracker
+	constructor: (api, state) ->
+		if not Func.existy(api) or typeof api isnt 'object' then Dom.error('Expected api to be an object.')
 		if not Func.existy(state) or typeof state isnt 'object' then Dom.error('Expected state to be an object.')
 
-		@_gap = gap
+		@_api = api
 		@state = state
 
 	listen: (commandArray) -> switch commandArray[0]
@@ -22,4 +22,3 @@ class GapMousedownTracker
 						text.replace(/^\s+|\s+$/g, '') + ' (' + href + ')'
 					])
 			)
-

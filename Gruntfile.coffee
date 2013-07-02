@@ -10,7 +10,7 @@ module.exports = (grunt) ->
 					'source/core/coffeescript/tracker/mousedown.coffee'
 					'source/core/coffeescript/tracker/scroll.coffee'
 					'source/core/coffeescript/tracker/time.coffee'
-					'source/core/coffeescript/gap.coffee'
+					'source/core/coffeescript/api.coffee'
 					'source/core/coffeescript/core.coffee'
 				]
 			test: files: [

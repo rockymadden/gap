@@ -1,6 +1,6 @@
-class Gap
-	constructor: (gap, gaq, state) ->
-		if not Func.existy(gap) or typeof gap isnt 'object' then Dom.error('Expected gap to be an object.')
+class Api
+	constructor: (commands, gaq, state) ->
+		if not Func.existy(commands) or typeof commands isnt 'object' then Dom.error('Expected commands to be an object.')
 		if not Func.existy(gaq) or typeof gaq isnt 'object' then Dom.error('Expected gaq to be an object.')
 		if not Func.existy(state) or typeof state isnt 'object' then Dom.error('Expected state to be an object.')
 
@@ -8,10 +8,10 @@ class Gap
 		@state = state
 		@trackers = {}
 
-		@subscribe('time', new GapTimeTracker(@, {}))
-		@subscribe('mousedown', new GapMousedownTracker(@, {}))
-		@subscribe('scroll', new GapScrollTracker(@, {}))
-		if @isCommand(gap) then @push(gap)
+		@subscribe('mousedown', new MousedownTracker(@, {}))
+		@subscribe('scroll', new ScrollTracker(@, {}))
+		@subscribe('time', new TimeTracker(@, {}))
+		if Func.lengthy(commands) then @push(commands)
 
 	isCommand: (command) -> Func.lengthy(command) and {}.toString.call(command) is '[object Array]'
 
@@ -36,4 +36,3 @@ class Gap
 		if not Func.existy(tracker) or typeof tracker isnt 'object' then Dom.error('Expected tracker to be an object.')
 
 		@trackers[key] = tracker
-

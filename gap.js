@@ -1,5 +1,5 @@
 (function() {
-  var Dom, Func, Gap, GapMousedownTracker, GapScrollTracker, GapTimeTracker, root;
+  var Api, Dom, Func, MousedownTracker, ScrollTracker, TimeTracker, root;
 
   Func = (function() {
     function Func() {}
@@ -94,19 +94,19 @@
 
   })();
 
-  GapMousedownTracker = (function() {
-    function GapMousedownTracker(gap, state) {
-      if (!Func.existy(gap) || typeof gap !== 'object') {
-        Dom.error('Expected gap to be an object.');
+  MousedownTracker = (function() {
+    function MousedownTracker(api, state) {
+      if (!Func.existy(api) || typeof api !== 'object') {
+        Dom.error('Expected api to be an object.');
       }
       if (!Func.existy(state) || typeof state !== 'object') {
         Dom.error('Expected state to be an object.');
       }
-      this._gap = gap;
+      this._api = api;
       this.state = state;
     }
 
-    GapMousedownTracker.prototype.listen = function(commandArray) {
+    MousedownTracker.prototype.listen = function(commandArray) {
       switch (commandArray[0]) {
         case '_gapTrackLinkClicks':
           return Dom.append(root.document.getElementsByTagName('body')[0], 'onmousedown', function(event) {
@@ -123,26 +123,26 @@
       }
     };
 
-    return GapMousedownTracker;
+    return MousedownTracker;
 
   })();
 
-  GapScrollTracker = (function() {
-    function GapScrollTracker(gap, state) {
-      if (!Func.existy(gap) || typeof gap !== 'object') {
-        Dom.error('Expected gap to be an object.');
+  ScrollTracker = (function() {
+    function ScrollTracker(api, state) {
+      if (!Func.existy(api) || typeof api !== 'object') {
+        Dom.error('Expected api to be an object.');
       }
       if (!Func.existy(state) || typeof state !== 'object') {
         Dom.error('Expected state to be an object.');
       }
-      this._gap = gap;
+      this._api = api;
       this.state = state;
     }
 
-    GapScrollTracker.prototype.listen = function(commandArray) {
+    ScrollTracker.prototype.listen = function(commandArray) {
       switch (commandArray[0]) {
         case '_gapTrackBounceViaScroll':
-          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !Func.truthy(this._gap.state.cookied) && !Func.truthy(this._gap.state.bounced)) {
+          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !Func.truthy(this._api.state.cookied) && !Func.truthy(this._api.state.bounced)) {
             this.state.bounceViaScrollPercent = commandArray[1];
             this.state.bounceViaScrollFunction = function() {
               var gap, gapState, percent, trackerState;
@@ -201,33 +201,33 @@
       }
     };
 
-    return GapScrollTracker;
+    return ScrollTracker;
 
   })();
 
-  GapTimeTracker = (function() {
-    function GapTimeTracker(gap, state) {
-      if (!Func.existy(gap) || typeof gap !== 'object') {
-        Dom.error('Expected gap to be an object.');
+  TimeTracker = (function() {
+    function TimeTracker(api, state) {
+      if (!Func.existy(api) || typeof api !== 'object') {
+        Dom.error('Expected api to be an object.');
       }
       if (!Func.existy(state) || typeof state !== 'object') {
         Dom.error('Expected state to be an object.');
       }
-      this._gap = gap;
+      this._api = api;
       this.state = state;
     }
 
-    GapTimeTracker.prototype.listen = function(commandArray) {
+    TimeTracker.prototype.listen = function(commandArray) {
       var fn;
 
       switch (commandArray[0]) {
         case '_gapTrackBounceViaTime':
-          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !Func.truthy(this._gap.state.cookied) && !Func.truthy(this._gap.state.bounced)) {
+          if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !Func.truthy(this._api.state.cookied) && !Func.truthy(this._api.state.bounced)) {
             return this.state.bounceViaTimeTimeout = root.setTimeout((function() {
               var gap, gapState;
 
               gap = root._gap;
-              gapState = this._gap.state;
+              gapState = root._gap.state;
               if (!Func.truthy(gapState.bounced)) {
                 gapState.bounced = true;
                 return gap.push(['_trackEvent', 'gapBounceViaTime', commandArray[1].toString()]);
@@ -255,14 +255,14 @@
       }
     };
 
-    return GapTimeTracker;
+    return TimeTracker;
 
   })();
 
-  Gap = (function() {
-    function Gap(gap, gaq, state) {
-      if (!Func.existy(gap) || typeof gap !== 'object') {
-        Dom.error('Expected gap to be an object.');
+  Api = (function() {
+    function Api(commands, gaq, state) {
+      if (!Func.existy(commands) || typeof commands !== 'object') {
+        Dom.error('Expected commands to be an object.');
       }
       if (!Func.existy(gaq) || typeof gaq !== 'object') {
         Dom.error('Expected gaq to be an object.');
@@ -273,19 +273,19 @@
       this._gaq = gaq;
       this.state = state;
       this.trackers = {};
-      this.subscribe('time', new GapTimeTracker(this, {}));
-      this.subscribe('mousedown', new GapMousedownTracker(this, {}));
-      this.subscribe('scroll', new GapScrollTracker(this, {}));
-      if (this.isCommand(gap)) {
-        this.push(gap);
+      this.subscribe('mousedown', new MousedownTracker(this, {}));
+      this.subscribe('scroll', new ScrollTracker(this, {}));
+      this.subscribe('time', new TimeTracker(this, {}));
+      if (Func.lengthy(commands)) {
+        this.push(commands);
       }
     }
 
-    Gap.prototype.isCommand = function(command) {
+    Api.prototype.isCommand = function(command) {
       return Func.lengthy(command) && {}.toString.call(command) === '[object Array]';
     };
 
-    Gap.prototype.publish = function(command) {
+    Api.prototype.publish = function(command) {
       var k, t, _ref, _results;
 
       if (!this.isCommand(command)) {
@@ -300,7 +300,7 @@
       return _results;
     };
 
-    Gap.prototype.push = function(command) {
+    Api.prototype.push = function(command) {
       var i, _i, _len, _results;
 
       if (!this.isCommand(command)) {
@@ -324,7 +324,7 @@
       }
     };
 
-    Gap.prototype.subscribe = function(key, tracker) {
+    Api.prototype.subscribe = function(key, tracker) {
       if (!Func.existy(key) || typeof key !== 'string') {
         Dom.error('Expected key to be a string.');
       }
@@ -334,7 +334,7 @@
       return this.trackers[key] = tracker;
     };
 
-    return Gap;
+    return Api;
 
   })();
 
@@ -357,23 +357,21 @@
     ga.type = 'text/javascript';
     ga.src = root.location.protocol === 'https:' ? 'https://ssl' : 'http://www' + '.google-analytics.com/ga.js';
     ga.onload = ga.onreadystatechange = function() {
-      return root._gap = new Gap(root._gap, root._gaq, {
+      root._gap = new Api(root._gap, root._gaq, {
         cookied: hasCookie,
         debugging: Func.truthy(root._gapDebug)
       });
+      return root.gap = {
+        Api: Api,
+        Dom: Dom,
+        Func: Func,
+        MousedownTracker: MousedownTracker,
+        ScrollTracker: ScrollTracker,
+        TimeTracker: TimeTracker
+      };
     };
     s = root.document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(ga, s);
-    if (Func.truthy(root._gapDebug)) {
-      return root.Gap = {
-        Dom: Dom,
-        Gap: Gap,
-        GapMousedownTracker: GapMousedownTracker,
-        GapScrollTracker: GapScrollTracker,
-        GapTimeTracker: GapTimeTracker,
-        Func: Func
-      };
-    }
+    return s.parentNode.insertBefore(ga, s);
   })();
 
 }).call(this);

@@ -1,15 +1,15 @@
-class GapScrollTracker
-	constructor: (gap, state) ->
-		if not Func.existy(gap) or typeof gap isnt 'object' then Dom.error('Expected gap to be an object.')
+class ScrollTracker
+	constructor: (api, state) ->
+		if not Func.existy(api) or typeof api isnt 'object' then Dom.error('Expected api to be an object.')
 		if not Func.existy(state) or typeof state isnt 'object' then Dom.error('Expected state to be an object.')
 
-		@_gap = gap
+		@_api = api
 		@state = state
 
 	listen: (commandArray) -> switch commandArray[0]
 		when '_gapTrackBounceViaScroll'
 			if commandArray.length is 2 and typeof commandArray[1] is 'number' and
-			not Func.truthy(@_gap.state.cookied) and not Func.truthy(@_gap.state.bounced)
+			not Func.truthy(@_api.state.cookied) and not Func.truthy(@_api.state.bounced)
 
 				@state.bounceViaScrollPercent = commandArray[1]
 				@state.bounceViaScrollFunction = ->
