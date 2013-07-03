@@ -2,7 +2,7 @@
 Dead simple wrapper around the Google Analytics API which provides automatic tracking of user behaviors via events. Want to see the event tracking in action? Open up your JavaScript console and head to the [project site](http://rockymadden.com/gap/).
 
 ##Installation
-There is no need to include any of the default Google Analytics tracking code, as GAP takes care of this for you. Simply [download the gap.min.js](https://raw.github.com/rockymadden/gap/master/gap.min.js) file, place on your server, and update the noted fields below.
+There is no need to include any of the default Google Analytics tracking code, as GAP takes care of this for you. Simply [download the gap.min.js](https://github.com/rockymadden/gap/releases) file, place on your server, and update the noted fields below.
 
 ```javascript
 var _gap = _gap || [];
@@ -14,8 +14,8 @@ _gap.push(['_trackPageview']);
 
 // With both bounce trackers active, any user who scrolls down 50% OR
 // stays 10 seconds is not counted as a bounce. You can use just one, or none.
-_gap.push(['_gapTrackBounceViaTime', 10]); // Optionally change (seconds).
-_gap.push(['_gapTrackBounceViaScroll', 50]); // Optionally change (percentage).
+_gap.push(['_gapTrackBounceViaTime', 10]); // Optionally change (min seconds).
+_gap.push(['_gapTrackBounceViaScroll', 50]); // Optionally change (min percentage).
 
 // Every 20 seconds, push a read event so that time on site is more accurate.
 // Only allow 30 of these read events per page.
@@ -25,7 +25,7 @@ _gap.push(['_gapTrackReads', 20, 30]); // Optionally change (cadence and max rea
 _gap.push(['_gapTrackLinkClicks']);
 
 // Track the maximum percentage of the page scrolled, should the percentage be greater than or equal to 25.
-_gap.push(['_gapTrackMaxScroll', 25]); // Optionally change (minimum percentage).
+_gap.push(['_gapTrackMaxScroll', 25]); // Optionally change (min percentage).
 
 (function() {
 	var gap = document.createElement('script');
