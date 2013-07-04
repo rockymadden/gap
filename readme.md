@@ -1,5 +1,5 @@
 #GAP - Google Analytics auto Push [![Build Status](https://travis-ci.org/rockymadden/gap.png?branch=master)](https://travis-ci.org/rockymadden/gap)
-Dead simple wrapper around the Google Analytics API which fixes default Google Analytics tracking methodologies and provides automatic tracking of micro user behaviors. Want to see the event tracking in action? Open up your JavaScript console and head to the [project site](http://rockymadden.com/gap/).
+Dead simple wrapper around the Google Analytics API which fixes default tracking methodologies and provides automatic tracking of micro user behaviors. Want to see the event tracking in action? Open up your JavaScript console and head to the [project site](http://rockymadden.com/gap/).
 
 ##Installation
 There is no need to include any of the default Google Analytics tracking code, as GAP takes care of this for you. Simply [download the gap.min.js](https://github.com/rockymadden/gap/releases) file, place on your server, and update the noted fields below.
