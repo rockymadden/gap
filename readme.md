@@ -1,5 +1,5 @@
 #GAP - Google Analytics auto Push [![Build Status](https://travis-ci.org/rockymadden/gap.png?branch=master)](https://travis-ci.org/rockymadden/gap)
-Dead simple wrapper around the Google Analytics API which provides automatic tracking of user behaviors via events. Want to see the event tracking in action? Open up your JavaScript console and head to the [project site](http://rockymadden.com/gap/).
+Dead simple wrapper around the Google Analytics API which fixes default Google Analytics tracking methodologies and provides automatic tracking of micro user behaviors. Want to see the event tracking in action? Open up your JavaScript console and head to the [project site](http://rockymadden.com/gap/).
 
 ##Installation
 There is no need to include any of the default Google Analytics tracking code, as GAP takes care of this for you. Simply [download the gap.min.js](https://github.com/rockymadden/gap/releases) file, place on your server, and update the noted fields below.
@@ -24,7 +24,7 @@ _gap.push(['_gapTrackReads', 20, 30]); // Optionally change (cadence and max rea
 // Anytime a user clicks a link, internal or external, push the event.
 _gap.push(['_gapTrackLinkClicks']);
 
-// Track the maximum percentage of the page scrolled, should the percentage be greater than or equal to 25.
+// Push the maximum percentage scrolled.
 _gap.push(['_gapTrackMaxScroll', 25]); // Optionally change (min percentage).
 
 (function() {
