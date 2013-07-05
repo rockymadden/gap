@@ -21,15 +21,20 @@ module.exports = (grunt) ->
 				'build/tracker/scroll-test.js': 'source/test/coffeescript/tracker/scroll-test.coffee'
 				'build/tracker/time-test.js': 'source/test/coffeescript/tracker/time-test.coffee'
 			]
-		copy: test: files: [
-			'build/func-test.html': 'source/test/html/func-test.html'
-			'build/core-test.html': 'source/test/html/core-test.html'
-			'build/api-test.html': 'source/test/html/api-test.html'
-			'build/readme-test.html': 'source/test/html/readme-test.html'
-			'build/tracker/mousedown-test.html': 'source/test/html/tracker/mousedown-test.html'
-			'build/tracker/scroll-test.html': 'source/test/html/tracker/scroll-test.html'
-			'build/tracker/time-test.html': 'source/test/html/tracker/time-test.html'
-		]
+		copy:
+			core: files: [
+				'gap.js': 'build/gap.js'
+				'gap.min.js': 'build/gap.min.js'
+			]
+			test: files: [
+				'build/func-test.html': 'source/test/html/func-test.html'
+				'build/core-test.html': 'source/test/html/core-test.html'
+				'build/api-test.html': 'source/test/html/api-test.html'
+				'build/readme-test.html': 'source/test/html/readme-test.html'
+				'build/tracker/mousedown-test.html': 'source/test/html/tracker/mousedown-test.html'
+				'build/tracker/scroll-test.html': 'source/test/html/tracker/scroll-test.html'
+				'build/tracker/time-test.html': 'source/test/html/tracker/time-test.html'
+			]
 		uglify: core: files: ['build/gap.min.js': 'build/gap.js']
 		qunit: all: ['build/**/*-test.html']
 
