@@ -116,9 +116,6 @@ _gap.push([
 ]);
 ```
 
-## Versioning
-[Semantic Versioning v2.0](http://semver.org/)
-
 ## License
 ```
 The MIT License (MIT)
