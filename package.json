@@ -1,11 +1,11 @@
 {
-	"name": "gap",
-	"version": "0.5.7",
-	"devDependencies": {
-		"grunt": "0.4.x",
-		"grunt-contrib-coffee": "0.7.x",
-		"grunt-contrib-copy": "0.4.x",
-		"grunt-contrib-uglify": "0.2.x",
-		"grunt-contrib-qunit": "0.2.x"
-	}
+  "name": "gap",
+  "version": "0.5.7",
+  "devDependencies": {
+    "grunt": "0.4.x",
+    "grunt-contrib-coffee": "0.7.x",
+    "grunt-contrib-copy": "0.4.x",
+    "grunt-contrib-uglify": "0.2.x",
+    "grunt-contrib-qunit": "0.2.x"
+  }
 }
