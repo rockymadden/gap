@@ -1,0 +1,27 @@
+{
+  "name": "gap",
+  "version": "0.5.7",
+  "authors": [
+    "Rocky Madden <git@rockymadden.com>"
+  ],
+  "description": "Fixes default Google Analytics tracking methodologies.",
+  "main": "gap.min.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "google",
+    "analytics",
+    "tracking",
+    "gap"
+  ],
+  "license": "MIT",
+  "homepage": "https://rockymadden.com/gap/",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
