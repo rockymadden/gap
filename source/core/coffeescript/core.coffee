@@ -9,7 +9,7 @@ unless root._gaq? then root._gaq = []
 	ga = root.document.createElement 'script'
 	ga.async = true
 	ga.type = 'text/javascript'
-	ga.src = if root.location.protocol is 'https:' then 'https://ssl' else 'http://www' + '.google-analytics.com/ga.js'
+	ga.src = (if root.location.protocol is 'https:' then 'https://ssl' else 'http://www') + '.google-analytics.com/ga.js'
 	ga.onload = ga.onreadystatechange = ->
 		root._gap = new Api(root._gap, root._gaq, {cookied: hasCookie, debugging: Func.truthy(root._gapDebug)})
 		root.gap =

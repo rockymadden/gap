@@ -25,7 +25,6 @@
 
     Dom.append = function(element, event, fn) {
       var pfn;
-
       if (!Func.existy(element) || typeof element !== 'object') {
         this.error('Expected valid element.');
       }
@@ -48,7 +47,6 @@
 
     Dom.debug = function(message) {
       var m;
-
       if (!Func.lengthy(message) || typeof message !== 'string') {
         this.error('Expected valid debug message.');
       }
@@ -111,7 +109,6 @@
         case '_gapTrackLinkClicks':
           return Dom.append(root.document.getElementsByTagName('body')[0], 'onmousedown', function(event) {
             var gap, href, target, text;
-
             target = event.target || event.srcElement;
             if (Func.existy(target) && (target.nodeName === 'A' || target.nodeName === 'BUTTON')) {
               gap = root._gap;
@@ -146,7 +143,6 @@
             this.state.bounceViaScrollPercent = commandArray[1];
             this.state.bounceViaScrollFunction = function() {
               var gap, gapState, percent, trackerState;
-
               gap = root._gap;
               gapState = root._gap.state;
               percent = Dom.scrolledPercent();
@@ -158,7 +154,6 @@
             };
             return Dom.append(root, 'onscroll', function(event) {
               var trackerState;
-
               trackerState = root._gap.trackers.scroll.state;
               if (Func.existy(trackerState.bounceViaScrollTimeout)) {
                 clearTimeout(trackerState.bounceViaScrollTimeout);
@@ -172,7 +167,6 @@
             this.state.maxScrollPercent = commandArray[1];
             this.state.maxScrollFunction = function() {
               var percent, trackerState;
-
               percent = Dom.scrolledPercent();
               trackerState = root._gap.trackers.scroll.state;
               if (percent >= trackerState.maxScrollPercent && (!Func.existy(trackerState.maxScrolledPercent) || percent > trackerState.maxScrolledPercent)) {
@@ -181,7 +175,6 @@
             };
             Dom.append(root, 'onscroll', function(event) {
               var trackerState;
-
               trackerState = root._gap.trackers.scroll.state;
               if (Func.existy(trackerState.maxScrollTimeout)) {
                 clearTimeout(trackerState.maxScrollTimeout);
@@ -190,7 +183,6 @@
             });
             return Dom.append(root, 'onunload', function(event) {
               var gap, trackerState;
-
               gap = root._gap;
               trackerState = root._gap.trackers.scroll.state;
               if (Func.existy(trackerState.maxScrolledPercent)) {
@@ -219,13 +211,11 @@
 
     TimeTracker.prototype.listen = function(commandArray) {
       var fn;
-
       switch (commandArray[0]) {
         case '_gapTrackBounceViaTime':
           if (commandArray.length === 2 && typeof commandArray[1] === 'number' && !Func.truthy(this._api.state.cookied) && !Func.truthy(this._api.state.bounced)) {
             return this.state.bounceViaTimeTimeout = root.setTimeout((function() {
               var gap, gapState;
-
               gap = root._gap;
               gapState = root._gap.state;
               if (!Func.truthy(gapState.bounced)) {
@@ -241,7 +231,6 @@
             this.state.readsSecondsMax = commandArray[1] * commandArray[2];
             return this.state.readsInterval = root.setInterval(fn = (function() {
               var gap, trackerState;
-
               gap = root._gap;
               trackerState = root._gap.trackers.time.state;
               if (trackerState.readsSeconds < trackerState.readsSecondsMax) {
@@ -287,7 +276,6 @@
 
     Api.prototype.publish = function(command) {
       var k, t, _ref, _results;
-
       if (!this.isCommand(command)) {
         Dom.error('Expected valid command.');
       }
@@ -302,7 +290,6 @@
 
     Api.prototype.push = function(command) {
       var i, _i, _len, _results;
-
       if (!this.isCommand(command)) {
         Dom.error('Expected valid command.');
       }
@@ -350,12 +337,11 @@
 
   (function() {
     var ga, hasCookie, s;
-
     hasCookie = Dom.hasCookie('__utmb');
     ga = root.document.createElement('script');
     ga.async = true;
     ga.type = 'text/javascript';
-    ga.src = root.location.protocol === 'https:' ? 'https://ssl' : 'http://www' + '.google-analytics.com/ga.js';
+    ga.src = (root.location.protocol === 'https:' ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     ga.onload = ga.onreadystatechange = function() {
       root._gap = new Api(root._gap, root._gaq, {
         cookied: hasCookie,
