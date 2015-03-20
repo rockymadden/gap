@@ -7,7 +7,7 @@ There is no need to include any of the default Google Analytics tracking code, a
 ```javascript
 var _gap = _gap || [];
 
-// Standard Google Analytics pushes, just with _gap.push. 
+// Standard Google Analytics pushes, just with _gap.push.
 // You can push anything, just like normal, via _gap.push instead of _gaq.push.
 _gap.push(['_setAccount', 'UA-XXXXXX-X']); // Change.
 _gap.push(['_trackPageview']);
@@ -42,7 +42,7 @@ _gap.push(['_gapTrackMaxScroll', 25]); // Optionally change (min percentage).
 
 __gapTrackBounceViaScroll__
 
-Logs a single ```gapBounceViaScroll``` event after scrolling n percentage down the page. This event will only fire once per session. This tracker uses debouncing. The following scenario helps illustrate why you might want to leverage this tracker: 
+Logs a single ```gapBounceViaScroll``` event after scrolling n percentage down the page. This event will only fire once per session. This tracker uses debouncing. The following scenario helps illustrate why you might want to leverage this tracker:
 
 * User A arrives on your website. He finds a wealth of information he is looking for on the first landing page. He fully scrolls/reads the entire page and then departs. By default, this is considered a bounce in Google Analytics.
 
@@ -60,7 +60,7 @@ More information on this subject, [straight from Google](http://analytics.blogsp
 
 __gapTrackBounceViaTime__
 
-Logs a single ```gapBounceViaTime``` event after n seconds. This event will only fire once per session. The following scenario helps illustrate why you might want to leverage this tracker: 
+Logs a single ```gapBounceViaTime``` event after n seconds. This event will only fire once per session. The following scenario helps illustrate why you might want to leverage this tracker:
 
 * User A arrives on your website. She finds a wealth of information she is looking for on the first landing page. She spends 15 minutes reading and then departs. By default, this is considered a bounce in Google Analytics.
 
@@ -77,7 +77,7 @@ More information on this subject, [straight from Google](http://analytics.blogsp
 
 __gapTrackReads__
 
-Logs ```gapRead``` events every n seconds. Each new event label is updated as time progresses. For instance, with a 10 second cadence the first event label would be 10, the second would be 20, and so on. The following scenarios help illustrate why you might want to leverage this tracker: 
+Logs ```gapRead``` events every n seconds. Each new event label is updated as time progresses. For instance, with a 10 second cadence the first event label would be 10, the second would be 20, and so on. The following scenarios help illustrate why you might want to leverage this tracker:
 
 * User A arrives on your website. He finds a wealth of information he is looking for on the first landing page. He spends 5 minutes reading and then departs. By default, the time on site for this user is 0 seconds in Google Analytics.
 * User B arrives on your website. He doesn't find what he is looking for on the first page, so 10 seconds after arriving he lands on the second, and final, page of his visit. He finds a wealth of information, and he spends 30 minutes reading and then departs. By default, the time on site for this user is 10 seconds in Google Analytics.
@@ -120,7 +120,7 @@ _gap.push([
 ```
 The MIT License (MIT)
 
-Copyright (c) 2013 Rocky Madden (http://rockymadden.com/)
+Copyright (c) 2015 Rocky Madden (https://rockymadden.com/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
