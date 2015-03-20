@@ -17,8 +17,6 @@ module.exports = (grunt) ->
         'bld/func-test.js': 'test/func-test.coffee'
         'bld/core-test.js': 'test/core-test.coffee'
         'bld/api-test.js': 'test/api-test.coffee'
-        'bld/tracker/mousedown-test.js': 'test/tracker/mousedown-test.coffee'
-        'bld/tracker/scroll-test.js': 'test/tracker/scroll-test.coffee'
         'bld/tracker/time-test.js': 'test/tracker/time-test.coffee'
       ]
     copy:
@@ -30,9 +28,6 @@ module.exports = (grunt) ->
         'bld/func-test.html': 'test/func-test.html'
         'bld/core-test.html': 'test/core-test.html'
         'bld/api-test.html': 'test/api-test.html'
-        'bld/readme-test.html': 'test/readme-test.html'
-        'bld/tracker/mousedown-test.html': 'test/tracker/mousedown-test.html'
-        'bld/tracker/scroll-test.html': 'test/tracker/scroll-test.html'
         'bld/tracker/time-test.html': 'test/tracker/time-test.html'
       ]
     uglify: main: files: ['bld/gap.min.js': 'bld/gap.js']
