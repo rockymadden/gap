@@ -16,7 +16,7 @@
     "gap"
   ],
   "license": "MIT",
-  "homepage": "https://rockymadden.com/gap/",
+  "homepage": "https://github.com/rockymadden/gap",
   "ignore": [
     "**/.*",
     "node_modules",
