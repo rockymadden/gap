@@ -1,15 +1,15 @@
 #GAP - Google Analytics auto Push [![Build Status](https://travis-ci.org/rockymadden/gap.png?branch=master)](https://travis-ci.org/rockymadden/gap)
-Dead simple wrapper around the Google Analytics API which fixes default tracking methodologies and provides automatic tracking of micro user behaviors. Want to see the event tracking in action? Open up your JavaScript console and head to the [project site](http://rockymadden.com/gap/).
+Dead simple wrapper around the Google Analytics API which fixes default tracking methodologies and provides automatic tracking of micro user behaviors.
 
 ##Installation
-There is no need to include any of the default Google Analytics tracking code, as GAP takes care of this for you. Simply [download the gap.min.js](https://github.com/rockymadden/gap/releases) file, place on your server, and update the noted fields below.
+There is no need to include any of the default Google Analytics tracking code, as GAP takes care of this for you. Simply specify as a [Bower](http://bower.io/) dependency and then include the tracking code on your site:
 
 ```javascript
 var _gap = _gap || [];
 
 // Standard Google Analytics pushes, just with _gap.push.
 // You can push anything, just like normal, via _gap.push instead of _gaq.push.
-_gap.push(['_setAccount', 'UA-XXXXXX-X']); // Change.
+_gap.push(['_setAccount', 'UA-XXXXXX-X']); // Change to your account.
 _gap.push(['_trackPageview']);
 
 // With both bounce trackers active, any user who scrolls down 50% OR
@@ -31,7 +31,7 @@ _gap.push(['_gapTrackMaxScroll', 25]); // Optionally change (min percentage).
 	var gap = document.createElement('script');
 	gap.async = true;
 	gap.type = 'text/javascript';
-	gap.src = '/js/gap.min.js'; // Change.
+	gap.src = '/bower_components/gap/dst/gap.min.js'; // Change, if needed.
 
 	var s = document.getElementsByTagName('script')[0];
 	s.parentNode.insertBefore(gap, s);
