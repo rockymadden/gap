@@ -4,7 +4,7 @@ module.exports = (grunt) ->
     coffee:
       main:
         options: join: true
-        files: 'build/gap.js': [
+        files: 'bld/gap.js': [
           'src/main/coffeescript/func.coffee'
           'src/main/coffeescript/dom.coffee'
           'src/main/coffeescript/tracker/mousedown.coffee'
@@ -14,29 +14,29 @@ module.exports = (grunt) ->
           'src/main/coffeescript/core.coffee'
         ]
       test: files: [
-        'build/func-test.js': 'src/test/coffeescript/func-test.coffee'
-        'build/core-test.js': 'src/test/coffeescript/core-test.coffee'
-        'build/api-test.js': 'src/test/coffeescript/api-test.coffee'
-        'build/tracker/mousedown-test.js': 'src/test/coffeescript/tracker/mousedown-test.coffee'
-        'build/tracker/scroll-test.js': 'src/test/coffeescript/tracker/scroll-test.coffee'
-        'build/tracker/time-test.js': 'src/test/coffeescript/tracker/time-test.coffee'
+        'bld/func-test.js': 'src/test/coffeescript/func-test.coffee'
+        'bld/core-test.js': 'src/test/coffeescript/core-test.coffee'
+        'bld/api-test.js': 'src/test/coffeescript/api-test.coffee'
+        'bld/tracker/mousedown-test.js': 'src/test/coffeescript/tracker/mousedown-test.coffee'
+        'bld/tracker/scroll-test.js': 'src/test/coffeescript/tracker/scroll-test.coffee'
+        'bld/tracker/time-test.js': 'src/test/coffeescript/tracker/time-test.coffee'
       ]
     copy:
       main: files: [
-        'dist/gap.js': 'build/gap.js'
-        'dist/gap.min.js': 'build/gap.min.js'
+        'dst/gap.js': 'bld/gap.js'
+        'dst/gap.min.js': 'bld/gap.min.js'
       ]
       test: files: [
-        'build/func-test.html': 'src/test/html/func-test.html'
-        'build/core-test.html': 'src/test/html/core-test.html'
-        'build/api-test.html': 'src/test/html/api-test.html'
-        'build/readme-test.html': 'src/test/html/readme-test.html'
-        'build/tracker/mousedown-test.html': 'src/test/html/tracker/mousedown-test.html'
-        'build/tracker/scroll-test.html': 'src/test/html/tracker/scroll-test.html'
-        'build/tracker/time-test.html': 'src/test/html/tracker/time-test.html'
+        'bld/func-test.html': 'src/test/html/func-test.html'
+        'bld/core-test.html': 'src/test/html/core-test.html'
+        'bld/api-test.html': 'src/test/html/api-test.html'
+        'bld/readme-test.html': 'src/test/html/readme-test.html'
+        'bld/tracker/mousedown-test.html': 'src/test/html/tracker/mousedown-test.html'
+        'bld/tracker/scroll-test.html': 'src/test/html/tracker/scroll-test.html'
+        'bld/tracker/time-test.html': 'src/test/html/tracker/time-test.html'
       ]
-    uglify: main: files: ['build/gap.min.js': 'build/gap.js']
-    qunit: all: ['build/**/*-test.html']
+    uglify: main: files: ['bld/gap.min.js': 'bld/gap.js']
+    qunit: all: ['bld/**/*-test.html']
 
   grunt.loadNpmTasks('grunt-contrib-coffee')
   grunt.loadNpmTasks('grunt-contrib-copy')

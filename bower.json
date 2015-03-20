@@ -5,7 +5,7 @@
     "Rocky Madden <git@rockymadden.com>"
   ],
   "description": "Fixes default Google Analytics tracking methodologies.",
-  "main": "dist/gap.min.js",
+  "main": "dst/gap.min.js",
   "moduleType": [
     "globals"
   ],
