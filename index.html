@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Gap by rockymadden</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Gap</h1>
+      <h2 class="project-tagline">Fix default Google Analytics tracking methodologies and track micro user behaviors.</h2>
+      <a href="https://github.com/rockymadden/gap" class="btn">View on GitHub</a>
+      <a href="https://github.com/rockymadden/gap/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/rockymadden/gap/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p>Dead simple wrapper around the Google Analytics API which fixes default tracking methodologies and provides automatic tracking of micro user behaviors.</p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>There is no need to include any of the default Google Analytics tracking code, as GAP takes care of this for you. Simply specify as a <a href="http://bower.io/">Bower</a> dependency and then include the tracking code on your site:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _gap <span class="pl-k">=</span> _gap <span class="pl-k">||</span> [];
+
+<span class="pl-c">// Standard Google Analytics pushes, just with _gap.push.</span>
+<span class="pl-c">// You can push anything, just like normal, via _gap.push instead of _gaq.push.</span>
+_gap.<span class="pl-c1">push</span>([<span class="pl-s"><span class="pl-pds">'</span>_setAccount<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>UA-XXXXXX-X<span class="pl-pds">'</span></span>]); <span class="pl-c">// Change to your account.</span>
+_gap.<span class="pl-c1">push</span>([<span class="pl-s"><span class="pl-pds">'</span>_trackPageview<span class="pl-pds">'</span></span>]);
+
+<span class="pl-c">// With both bounce trackers active, any user who scrolls down 50% OR</span>
+<span class="pl-c">// stays 10 seconds is not counted as a bounce. You can use just one, or none.</span>
+_gap.<span class="pl-c1">push</span>([<span class="pl-s"><span class="pl-pds">'</span>_gapTrackBounceViaTime<span class="pl-pds">'</span></span>, <span class="pl-c1">10</span>]); <span class="pl-c">// Optionally change (min seconds).</span>
+_gap.<span class="pl-c1">push</span>([<span class="pl-s"><span class="pl-pds">'</span>_gapTrackBounceViaScroll<span class="pl-pds">'</span></span>, <span class="pl-c1">50</span>]); <span class="pl-c">// Optionally change (min percentage).</span>
+
+<span class="pl-c">// Every 20 seconds, push a read event so that time on site is more accurate.</span>
+<span class="pl-c">// Only allow 30 of these read events per page.</span>
+_gap.<span class="pl-c1">push</span>([<span class="pl-s"><span class="pl-pds">'</span>_gapTrackReads<span class="pl-pds">'</span></span>, <span class="pl-c1">20</span>, <span class="pl-c1">30</span>]); <span class="pl-c">// Optionally change (cadence and max read events per page).</span>
+
+<span class="pl-c">// Anytime a user clicks a link, internal or external, push the event.</span>
+_gap.<span class="pl-c1">push</span>([<span class="pl-s"><span class="pl-pds">'</span>_gapTrackLinkClicks<span class="pl-pds">'</span></span>]);
+
+<span class="pl-c">// Push the maximum percentage scrolled.</span>
+_gap.<span class="pl-c1">push</span>([<span class="pl-s"><span class="pl-pds">'</span>_gapTrackMaxScroll<span class="pl-pds">'</span></span>, <span class="pl-c1">25</span>]); <span class="pl-c">// Optionally change (min percentage).</span>
+
+(<span class="pl-k">function</span>() {
+    <span class="pl-k">var</span> gap <span class="pl-k">=</span> <span class="pl-c1">document</span>.<span class="pl-c1">createElement</span>(<span class="pl-s"><span class="pl-pds">'</span>script<span class="pl-pds">'</span></span>);
+    gap.async <span class="pl-k">=</span> <span class="pl-c1">true</span>;
+    gap.<span class="pl-c1">type</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>text/javascript<span class="pl-pds">'</span></span>;
+    gap.<span class="pl-c1">src</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>/bower_components/gap/dst/gap.min.js<span class="pl-pds">'</span></span>; <span class="pl-c">// Change, if needed.</span>
+
+    <span class="pl-k">var</span> s <span class="pl-k">=</span> <span class="pl-c1">document</span>.<span class="pl-c1">getElementsByTagName</span>(<span class="pl-s"><span class="pl-pds">'</span>script<span class="pl-pds">'</span></span>)[<span class="pl-c1">0</span>];
+    s.<span class="pl-c1">parentNode</span>.<span class="pl-c1">insertBefore</span>(gap, s);
+})();</pre></div>
+
+<h2>
+<a id="trackers" class="anchor" href="#trackers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Trackers</h2>
+
+<p><strong>gapTrackBounceViaScroll</strong></p>
+
+<p>Logs a single <code>gapBounceViaScroll</code> event after scrolling n percentage down the page. This event will only fire once per session. This tracker uses debouncing. The following scenario helps illustrate why you might want to leverage this tracker:</p>
+
+<ul>
+<li>User A arrives on your website. He finds a wealth of information he is looking for on the first landing page. He fully scrolls/reads the entire page and then departs. By default, this is considered a bounce in Google Analytics.</li>
+</ul>
+
+<div class="highlight highlight-javascript"><pre>_gap.<span class="pl-c1">push</span>([
+    <span class="pl-s"><span class="pl-pds">'</span>_gapTrackBounceViaScroll<span class="pl-pds">'</span></span>,
+    <span class="pl-c1">50</span> <span class="pl-c">// Percentage of the page scrolled before this user is not considered a bounce.</span>
+]);</pre></div>
+
+<p>More information on this subject, <a href="http://analytics.blogspot.com/2012/07/tracking-adjusted-bounce-rate-in-google.html">straight from Google</a></p>
+
+<hr>
+
+<p><strong>gapTrackBounceViaTime</strong></p>
+
+<p>Logs a single <code>gapBounceViaTime</code> event after n seconds. This event will only fire once per session. The following scenario helps illustrate why you might want to leverage this tracker:</p>
+
+<ul>
+<li>User A arrives on your website. She finds a wealth of information she is looking for on the first landing page. She spends 15 minutes reading and then departs. By default, this is considered a bounce in Google Analytics.</li>
+</ul>
+
+<div class="highlight highlight-javascript"><pre>_gap.<span class="pl-c1">push</span>([
+    <span class="pl-s"><span class="pl-pds">'</span>_gapTrackBounceViaTime<span class="pl-pds">'</span></span>,
+    <span class="pl-c1">10</span> <span class="pl-c">// Number of seconds before this user is not considered a bounce.</span>
+]);</pre></div>
+
+<p>More information on this subject, <a href="http://analytics.blogspot.com/2012/07/tracking-adjusted-bounce-rate-in-google.html">straight from Google</a>.</p>
+
+<hr>
+
+<p><strong>gapTrackReads</strong></p>
+
+<p>Logs <code>gapRead</code> events every n seconds. Each new event label is updated as time progresses. For instance, with a 10 second cadence the first event label would be 10, the second would be 20, and so on. The following scenarios help illustrate why you might want to leverage this tracker:</p>
+
+<ul>
+<li>User A arrives on your website. He finds a wealth of information he is looking for on the first landing page. He spends 5 minutes reading and then departs. By default, the time on site for this user is 0 seconds in Google Analytics.</li>
+<li>User B arrives on your website. He doesn't find what he is looking for on the first page, so 10 seconds after arriving he lands on the second, and final, page of his visit. He finds a wealth of information, and he spends 30 minutes reading and then departs. By default, the time on site for this user is 10 seconds in Google Analytics.</li>
+<li>You have redesigned your website hoping to improve user engagement (e.g. increase time on site and lower bounce rate). Because you used the default implementation of the Google Analytics code, your bounce rate is over stated and your time on site is under stated. After the redesign, you see positive numbers on both these fronts. Bounce rate is down and time on site is up. Both these data points are not only incorrect, but the opposite could be true. Your time on site could, in actuality, be lower than before. Your bounce rate could, in actuality, be higher than before.</li>
+</ul>
+
+<p>Polling cadence can be changed as well as the number of events total this tracker can utilize per page. There is a limit of <a href="https://developers.google.com/analytics/devguides/collection/gajs/limits-quotas">500 total events tracked per session</a>, so keep this in mind.</p>
+
+<div class="highlight highlight-javascript"><pre>_gap.<span class="pl-c1">push</span>([
+    <span class="pl-s"><span class="pl-pds">'</span>_gapTrackReads<span class="pl-pds">'</span></span>,
+    <span class="pl-c1">20</span>, <span class="pl-c">// Polling cadence, in seconds.</span>
+    <span class="pl-c1">30</span> <span class="pl-c">// Maximum number of these events tracked per page.</span>
+]);</pre></div>
+
+<p>More information on this subject, <a href="http://analytics.blogspot.com/2012/07/tracking-adjusted-bounce-rate-in-google.html">straight from Google</a>.</p>
+
+<hr>
+
+<p><strong>gapTrackLinkClicks</strong></p>
+
+<p>Logs <code>a</code> and <code>button</code> mousedown events (i.e. user clicks) via event delegation. Event action logged is <code>gapLinkClick</code>. Event label logged is <code>#{linkName} (#{linkURL})</code>.</p>
+
+<div class="highlight highlight-javascript"><pre>_gap.<span class="pl-c1">push</span>([<span class="pl-s"><span class="pl-pds">'</span>_gapTrackLinkClicks<span class="pl-pds">'</span></span>]);</pre></div>
+
+<p><strong>gapTrackMaxScroll</strong></p>
+
+<p>Logs <code>gapMaxScroll</code> events which indicate the maximum percentage of the page the user scrolled. This event will be pushed up to once per page. Should the user not scroll past the minimum percentage required, no event will be pushed. The event label indicates the maximum percentage scrolled. This tracker uses debouncing.</p>
+
+<div class="highlight highlight-javascript"><pre>_gap.<span class="pl-c1">push</span>([
+    <span class="pl-s"><span class="pl-pds">'</span>_gapTrackMaxScroll<span class="pl-pds">'</span></span>,
+    <span class="pl-c1">25</span> <span class="pl-c">// Minimum percentage scrolled before event is pushed.</span>
+]);</pre></div>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<pre><code>The MIT License (MIT)
+
+Copyright (c) 2015 Rocky Madden (https://rockymadden.com/)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+</code></pre>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/rockymadden/gap">Gap</a> is maintained by <a href="https://github.com/rockymadden">rockymadden</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
